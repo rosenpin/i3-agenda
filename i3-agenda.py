@@ -21,6 +21,8 @@ DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
 
 button = os.getenv("BLOCK_BUTTON", "") # i3blocks use this envvar to check the click
 
+allowed_calendars_ids = [] # populate with the Google Calendar IDs you are interested in
+
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
                     default='',
@@ -65,7 +67,8 @@ def getEvents(service):
     while True:
         calendar_list = service.calendarList().list().execute()
         for calendar_list_entry in calendar_list['items']:
-            calendar_ids.append(calendar_list_entry['id'])
+            if not allowed_calendars_ids or calendar_list_entry['id'] in allowed_calendars_ids:
+                calendar_ids.append(calendar_list_entry['id'])
         page_token = calendar_list.get('nextPageToken')
         if not page_token:
             break

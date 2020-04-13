@@ -6,14 +6,6 @@ You can take this input and show it on your i3-bar or polybar
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest  
 It will print the time and title of the closest event  
 
-## Notes
-It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
-
-It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag when running  
-`python i3-agenda.py --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour)
-This means that if you create a new event, it might take an hour for the script to recognize it  
-The default is 30 minutes
-
 # Setup
 
 ## Dependencies
@@ -39,6 +31,24 @@ After installing the dependencies, and downloading the credentials file,
 4. Optional: you can link or move the python script to your path (for example /usr/bin), this will make the bar configuration cleaner
 5. Add configuration to your bar
 
+# Usage
+## Filter displayed calendars
+
+To display events only from certain calendars the variable `allowed_calendars_ids` at the beginning of the script can be populated inserting the list of ids (as string) of the calendars you are interested in.
+
+To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
+
+Leaving the list empty will fetch all calendars (default behavior).
+
+## Notes
+It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
+
+It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag when running  
+`python i3-agenda.py --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour)
+This means that if you create a new event, it might take an hour for the script to recognize it  
+The default is 30 minutes
+
+## Examples
 Example polybar configuration  
 ```
 modules-center = agenda
@@ -48,21 +58,18 @@ type = custom/script
 exec = python3 ~/i3-agenda/i3-agenda.py -c ~/.google_credentials.json -ttl 60
 click-left = chromium https://calendar.google.com/calendar/r/day
 interval = 60
-```
-
-```
-bar {
-    status_command echo $(python3 ~/i3-agenda/i3-agenda.py -c ~/.google_credentials.json -ttl 60)
-}
-```
-Example output of the script:  
-```11:00 Grocery shopping```
+```  
 
 Example i3block configuration
 ```
 [i3-agenda]
 command=/usr/bin/python3 ~/.config/i3blocks/scripts/i3-agenda.py -c ~/.google_credentials.json -ttl 60
 interval=60
-```
+```  
+
+
+Example output of the script:  
+```11:00 Grocery shopping```
+
 
 ![example](art/screenshot.png)
