@@ -15,6 +15,14 @@ This means that if you create a new event, it might take an hour for the script 
 The default is 30 minutes
 
 # Setup
+
+## Dependencies
+You need to install some python libraries  
+Make sure python3 is your default python  
+Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2 google-auth-oauthlib`  
+
+## Installation
+After installing the dependencies,  
 1. Clone the repo to a local directory `cd ~/ && git clone https://gitlab.com/rosenpin/i3-agenda`
 2. You need to create a Google API project and download your OAuth 2.0 credentials json file   
 You can create your credentials here [https://console.developers.google.com/apis/credentials](https://console.developers.google.com/apis/credentials)  
