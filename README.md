@@ -29,7 +29,7 @@ modules-center = agenda
 ....
 [module/agenda]
 type = custom/script
-exec = cd ~/i3-agenda/ && python i3-agenda.py
+exec = python3 ~/i3-agenda.py -c ~/.google_credentials.json -ttl 60
 click-left = chromium https://calendar.google.com/calendar/r/day
 interval = 60
 ```
