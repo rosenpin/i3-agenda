@@ -12,6 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rosenpin/i3-agenda",
+    download_url="https://github.com/rosenpin/i3-agenda/archive/1.0.tar.gz",
     packages=setuptools.find_packages(),
     license="Unlicense",
     classifiers=[
