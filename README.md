@@ -34,7 +34,7 @@ Another great guide can be found here if you're still having trouble: [https://g
 
 ## Installation
 After installing the dependencies, and downloading the credentials file,  
-1. Clone the repo to a local directory `cd ~/ && git clone https://gitlab.com/rosenpin/i3-agenda && cd i3-agenda`
+1. Clone the repo to a local directory `cd ~/ && git clone https://github.com/rosenpin/i3-agenda && cd i3-agenda`
 3. Run the script `python3 i3-agenda.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.   
 4. Optional: you can link or move the python script to your path (for example /usr/bin), this will make the bar configuration cleaner
 5. Add configuration to your bar
@@ -57,5 +57,12 @@ bar {
 ```
 Example output of the script:  
 ```11:00 Grocery shopping```
+
+Example i3block configuration
+```
+[i3-agenda]
+command=/usr/bin/python3 ~/.config/i3blocks/scripts/i3-agenda.py -c ~/.google_credentials.json -ttl 60
+interval=60
+```
 
 ![example](art/screenshot.png)
