@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from __future__ import print_function
 from bidi.algorithm import get_display
 import time
@@ -7,15 +9,20 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import argparse
 
-# If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+TMP_TOKEN = '/tmp/i3agenda_google_token.pickle'
 
+parser = argparse.ArgumentParser(description='Show next Google Calendar event')
+parser.add_argument('--credentials', '-c', type=str,
+                   help='path to your credentials.json file')
 
 def main():
-    service = connect()
+    args = parser.parse_args()
 
-    # Call the Calendar API
+    service = connect(args.credentials)
+
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
@@ -48,30 +55,27 @@ def main():
     t = datetime.datetime.fromtimestamp(closest[0])
     print(f"{t:%H:%M} " + get_display(closest[1]) )
 
-def connect():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
+def connect(credspath):
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    if os.path.exists(TMP_TOKEN):
+        with open(TMP_TOKEN, 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
-        if not os.path.exists('credentials.json'):
-            print("You need to download your credentials json file from the Google API Console and place it in the same directory as the script")
+        if not os.path.exists(credspath):
+            print("You need to download your credentials json file from the Google API Console and pass its path to this script")
             exit(1)
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                credspath, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
+        with open(TMP_TOKEN, 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('calendar', 'v3', credentials=creds)
