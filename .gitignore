@@ -4,4 +4,3 @@ build/
 dist/
 i3_agenda/__pycache__
 *.egg-info
-i3-agenda.py
