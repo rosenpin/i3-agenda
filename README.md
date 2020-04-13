@@ -15,7 +15,8 @@ It might not work properly if you have more than 10 all day events, this can be 
 You can create your credentials here [https://console.developers.google.com/apis/credentials](https://console.developers.google.com/apis/credentials)  
 If your'e having trouble, you can use this tutorial [https://developers.google.com/calendar/auth](https://developers.google.com/calendar/auth)  
 3. Run the script `python3 i3-agenda.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced by the path to your credentials.json file. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.   
-4. Add configuration to your bar
+4. Optional: you can link or move the python script to your path (for example /usr/bin), this will make the bar configuration cleaner
+5. Add configuration to your bar
 
 Example polybar configuration  
 ```
