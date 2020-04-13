@@ -18,3 +18,5 @@ interval = 60
 
 Example output of the script:  
 ```11:00 Grocery shopping```
+
+[!example](art/screenshot.png)
