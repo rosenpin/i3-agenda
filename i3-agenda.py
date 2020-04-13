@@ -11,10 +11,14 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import argparse
+import os
+import subprocess
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 TMP_TOKEN = '/tmp/i3agenda_google_token.pickle'
 CACHE_PATH = '/tmp/i3agenda_cache.txt'
+
+button = os.getenv("BLOCK_BUTTON", "nope") # i3blocks use this envvar to check the click
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
@@ -39,7 +43,9 @@ class EventEncoder(json.JSONEncoder):
 def main():
     args = parser.parse_args()
 
-
+    if button is not "":
+        subprocess.Popen(["xdg-open", "https://calendar.google.com/calendar/r/day"])
+        
     events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
