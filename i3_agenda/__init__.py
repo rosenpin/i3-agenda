@@ -47,7 +47,7 @@ class EventEncoder(json.JSONEncoder):
 def main():
     args = parser.parse_args()
 
-    if button is not "":
+    if button != "":
         subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
         
     events = load_cache(args.cachettl)
