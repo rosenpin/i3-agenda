@@ -16,4 +16,4 @@ interval = 60
 ```
 
 Example output of the script:  
-```next: Grocery shopping```
+```11:00 Grocery shopping```
