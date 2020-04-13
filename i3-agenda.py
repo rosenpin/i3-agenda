@@ -86,6 +86,9 @@ def get_unix_time(full_time):
     else: 
         format = '%Y-%m-%d'
 
+    if full_time[-3] == ":":
+        full_time = full_time[:-3]+full_time[-2:]
+
     return time.mktime(datetime.datetime.strptime(full_time, format).timetuple())
 
 def get_closest(events):
