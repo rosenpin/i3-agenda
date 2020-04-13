@@ -47,7 +47,7 @@ After installing the dependencies, and downloading the credentials file, install
 # Usage
 ## Filter displayed calendars
 
-To display events only from certain calendars the variable `allowed_calendars_ids` at the beginning of the script can be populated inserting the list of ids (as string) of the calendars you are interested in.
+To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.
 
 To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
 
