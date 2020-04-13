@@ -26,7 +26,7 @@ https://developers.google.com/calendar/quickstart/python
 
 1. You need to create a Google API project and download your OAuth 2.0 credentials json file   
 You first need to create a project [here](https://console.developers.google.com/apis/credentials), then add Google Calendar support, then download the credentials.json file.  
-# Alternatively, you can just use [this link](https://developers.google.com/calendar/quickstart/python) and click "Enable the Google Calendar API". This will create a project, add Google Calendar support, and let you download the file in 1 click
+### Alternatively, you can just use [this link](https://developers.google.com/calendar/quickstart/python) and click "Enable the Google Calendar API". This will create a project, add Google Calendar support, and let you download the file in 1 click
 If you're having trouble, you can use this tutorial for more information [https://developers.google.com/calendar/auth](https://developers.google.com/calendar/auth)  
 2. Download the credentials file to somewhere on your computer
 3. Proceed to installation phase
