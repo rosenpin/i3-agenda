@@ -44,7 +44,8 @@ def main():
                     closest[0] = current
                     closest[1] = summary
 
-    print("next: " + get_display(closest[1]))
+    t = datetime.datetime.fromtimestamp(closest[0])
+    print(f"{t:%H:%M} " + get_display(closest[1]) )
 
 def connect():
     """Shows basic usage of the Google Calendar API.

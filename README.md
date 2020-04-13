@@ -6,6 +6,8 @@ You can do that here [https://developers.google.com/calendar/auth](https://devel
 
 Example polybar configuration  
 ```
+modules-center = agenda
+....
 [module/agenda]
 type = custom/script
 exec = cd ~/i3-agenda/ && python i3-agenda.py
