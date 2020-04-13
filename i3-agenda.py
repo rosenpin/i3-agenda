@@ -23,9 +23,11 @@ parser.add_argument('--cachettl', '-ttl', type=int, default=30,
                    help='time for cache to be kept in minutes')
 
 class Event():
-    def __init__(self, summary, startTime):
-        self.startTime = startTime
+    def __init__(self, summary, start_time, unix_time, end_time):
+        self.start_time = start_time
         self.summary = summary
+        self.unix_time = unix_time
+        self.end_time = end_time
 
 class EventEncoder(json.JSONEncoder):
    def default(self, object):
@@ -38,13 +40,13 @@ def main():
     args = parser.parse_args()
 
 
-    events = loadCache(args.cachettl)
+    events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
         events = getEvents(service)
-        saveCache(events)
+        save_cache(events)
 
-    closest = getClosest(events)
+    closest = get_closest(events)
         
     t = datetime.datetime.fromtimestamp(closest[0])
     print(f"{t:%H:%M} " + get_display(closest[1]) )
@@ -71,22 +73,35 @@ def getEvents(service):
             continue
 
         for event in events:
-            all.append(Event(event['summary'],event['start'].get('dateTime', event['start'].get('date'))))
+            end_time = get_unix_time(event['end'].get('dateTime', event['end'].get('date')))
+            start_time = event['start'].get('dateTime', event['start'].get('date'))
+            unix_time = get_unix_time(start_time)
+            all.append(Event(event['summary'], start_time, unix_time, end_time))
 
     return all
 
-def getClosest(events):
+def get_unix_time(full_time):
+    if "T" in full_time:
+        format = '%Y-%m-%dT%H:%M:%S%z'
+    else: 
+        format = '%Y-%m-%d'
+
+    return time.mktime(datetime.datetime.strptime(full_time, format).timetuple())
+
+def get_closest(events):
     closest = [-1,""]
     for event in events:
-        if "T" in event.startTime:
-            current = time.mktime(datetime.datetime.strptime(event.startTime, '%Y-%m-%dT%H:%M:%S%z').timetuple())
+        if "T" in event.start_time:
+            current = event.unix_time
+            if event.end_time < time.time():
+                continue
             if closest[0] == -1 or current < closest[0]:
                 closest[0] = current
                 closest[1] = event.summary
 
     return closest
 
-def loadCache(cachettl):
+def load_cache(cachettl):
     if not os.path.exists(CACHE_PATH):
         return None
 
@@ -97,10 +112,10 @@ def loadCache(cachettl):
     with open(CACHE_PATH, 'r') as f:
         raw = json.loads(f.read())
         for event in raw:
-            events.append(Event(event['summary'], event['startTime']))
+            events.append(Event(event['summary'], event['start_time'], event['unix_time'], event['end_time']))
     return events
 
-def saveCache(events):
+def save_cache(events):
     with open(CACHE_PATH, 'w+') as f:
         f.write(EventEncoder().encode(events))
 
