@@ -10,11 +10,12 @@ It will print the time and title of the closest event
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
 
 # Setup
-1. You need to create a Google API project and download your OAuth 2.0 credentials json file to the same directory from which you will run the script  
+1. Clone the repo to a local directory `cd ~/ && git clone https://gitlab.com/rosenpin/i3-agenda`
+2. You need to create a Google API project and download your OAuth 2.0 credentials json file to the same directory from which you will run the script  
 You can create your credentials here [https://console.developers.google.com/apis/credentials](https://console.developers.google.com/apis/credentials)  
 If your'e having trouble, you can use this tutorial [https://developers.google.com/calendar/auth](https://developers.google.com/calendar/auth)  
-2. Run the script, it will print your next event
-3. Add configuration to your bar
+3. Run the script, it will print your next event
+4. Add configuration to your bar
 
 Example polybar configuration  
 ```

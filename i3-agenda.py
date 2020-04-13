@@ -61,6 +61,9 @@ def connect():
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
+        if not os.path.exists('credentials.json'):
+            print("You need to download your credentials json file from the Google API Console and place it in the same directory as the script")
+            exit(1)
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
