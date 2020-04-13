@@ -58,4 +58,12 @@ bar {
 Example output of the script:  
 ```11:00 Grocery shopping```
 
+## Filter displayed calendars
+
+To display events only from certain calendars the variable `allowed_calendars_ids` at the beginning of the script can be populated inserting the list of ids (as string) of the calendars you are interested in.
+
+To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
+
+Leaving the list empty will fetch all calendars (default behavior).
+
 ![example](art/screenshot.png)
