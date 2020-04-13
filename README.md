@@ -30,9 +30,13 @@ Another great guide can be found here if you're still having trouble: [https://g
 ## Installation
 After installing the dependencies, and downloading the credentials file,  
 1. Clone the repo to a local directory `cd ~/ && git clone https://github.com/rosenpin/i3-agenda && cd i3-agenda`
-3. Run the script `python3 i3-agenda.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.   
-4. Optional: you can link or move the python script to your path (for example /usr/bin), this will make the bar configuration cleaner
-5. Add configuration to your bar
+3. Run the script `python3 i3_agenda/__init__.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.   
+4. Optional: you can run `sudo python setup.py install` to add the script to your path so you can run `i3-agenda` anywhere
+5. Add configuration to your bar (examples in the Examples section below)
+
+### Arch Linux
+1. `yay -S i3-agenda-git`
+2. Add configuration to your bar (examples in the Examples section below)
 
 # Usage
 ## Filter displayed calendars
@@ -47,7 +51,7 @@ Leaving the list empty will fetch all calendars (default behavior).
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
 
 It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag when running  
-`python i3-agenda.py --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour)
+`i3-agenda --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour)
 This means that if you create a new event, it might take an hour for the script to recognize it  
 The default is 30 minutes
 
@@ -58,7 +62,7 @@ modules-center = agenda
 ....
 [module/agenda]
 type = custom/script
-exec = python3 ~/i3-agenda/i3-agenda.py -c ~/.google_credentials.json -ttl 60
+exec = i3-agenda -c ~/.google_credentials.json -ttl 60
 click-left = chromium https://calendar.google.com/calendar/r/day
 interval = 60
 ```  
@@ -66,7 +70,7 @@ interval = 60
 Example i3block configuration
 ```
 [i3-agenda]
-command=/usr/bin/python3 ~/.config/i3blocks/scripts/i3-agenda.py -c ~/.google_credentials.json -ttl 60
+command=i3-agenda -c ~/.google_credentials.json -ttl 60
 interval=60
 ```  
 
