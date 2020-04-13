@@ -38,11 +38,11 @@ class Event():
         self.end_time = end_time
 
 class EventEncoder(json.JSONEncoder):
-   def default(self, object):
-    if isinstance(object, Event):
-        return object.__dict__
+   def default(self, o): # pylint: disable=E0202
+    if isinstance(o, Event):
+        return o.__dict__
     else:
-        return json.JSONEncoder.default(self, object)
+        return json.JSONEncoder.default(self, o)
 
 def main():
     args = parser.parse_args()
