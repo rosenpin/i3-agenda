@@ -13,3 +13,5 @@ click-left = chromium https://calendar.google.com/calendar/r/day
 interval = 60
 ```
 
+Example output of the script:  
+```next: Grocery shopping```
