@@ -1,6 +1,7 @@
 #!/bin/python3
 
 from __future__ import print_function
+import json
 from bidi.algorithm import get_display
 import time
 import datetime
@@ -13,16 +14,42 @@ import argparse
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 TMP_TOKEN = '/tmp/i3agenda_google_token.pickle'
+CACHE_PATH = '/tmp/i3agenda_cache.txt'
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
                    help='path to your credentials.json file')
+parser.add_argument('--cachettl', '-ttl', type=int, default=30,
+                   help='time for cache to be kept in minutes')
+
+class Event():
+    def __init__(self, summary, startTime):
+        self.startTime = startTime
+        self.summary = summary
+
+class EventEncoder(json.JSONEncoder):
+   def default(self, object):
+    if isinstance(object, Event):
+        return object.__dict__
+    else:
+        return json.JSONEncoder.default(self, object)
 
 def main():
     args = parser.parse_args()
 
-    service = connect(args.credentials)
 
+    events = loadCache(args.cachettl)
+    if events == None:
+        service = connect(args.credentials)
+        events = getEvents(service)
+        saveCache(events)
+
+    closest = getClosest(events)
+        
+    t = datetime.datetime.fromtimestamp(closest[0])
+    print(f"{t:%H:%M} " + get_display(closest[1]) )
+
+def getEvents(service):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
@@ -33,7 +60,7 @@ def main():
         if not page_token:
             break
 
-    closest = [-1,""]
+    all = []
     for id in calendar_ids:
         events_result = service.events().list(calendarId=id, timeMin=now,
                                             maxResults=10, singleEvents=True,
@@ -42,18 +69,40 @@ def main():
 
         if not events:
             continue
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            summary = event['summary']
-            if "T" in start:
-                current = time.mktime(datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S%z').timetuple())
-                if closest[0] == -1 or current < closest[0]:
-                    closest[0] = current
-                    closest[1] = summary
-                    break
 
-    t = datetime.datetime.fromtimestamp(closest[0])
-    print(f"{t:%H:%M} " + get_display(closest[1]) )
+        for event in events:
+            all.append(Event(event['summary'],event['start'].get('dateTime', event['start'].get('date'))))
+
+    return all
+
+def getClosest(events):
+    closest = [-1,""]
+    for event in events:
+        if "T" in event.startTime:
+            current = time.mktime(datetime.datetime.strptime(event.startTime, '%Y-%m-%dT%H:%M:%S%z').timetuple())
+            if closest[0] == -1 or current < closest[0]:
+                closest[0] = current
+                closest[1] = event.summary
+
+    return closest
+
+def loadCache(cachettl):
+    if not os.path.exists(CACHE_PATH):
+        return None
+
+    if os.path.getmtime(CACHE_PATH) - time.time() > cachettl * 60:
+        return None
+
+    events = []
+    with open(CACHE_PATH, 'r') as f:
+        raw = json.loads(f.read())
+        for event in raw:
+            events.append(Event(event['summary'], event['startTime']))
+    return events
+
+def saveCache(events):
+    with open(CACHE_PATH, 'w+') as f:
+        f.write(EventEncoder().encode(events))
 
 def connect(credspath):
     creds = None
