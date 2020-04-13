@@ -9,6 +9,11 @@ It will print the time and title of the closest event
 ## Notes
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
 
+It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag when running  
+`python i3-agenda.py --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour)
+This means that if you create a new event, it might take an hour for the script to recognize it  
+The default is 30 minutes
+
 # Setup
 1. Clone the repo to a local directory `cd ~/ && git clone https://gitlab.com/rosenpin/i3-agenda`
 2. You need to create a Google API project and download your OAuth 2.0 credentials json file   
