@@ -1,3 +1,14 @@
+# What is this?
+It's a script that communicates with Google's calendar API, it will go through all your calendars and print the next calendar event details  
+You can take this input and show it on your i3-bar or polybar  
+
+## How does it to that
+It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest  
+It will print the time and title of the closest event  
+
+## Notes
+It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable    
+
 # Setup
 1. You need to create a Google API project and download your OAuth 2.0 credentials json file to the same directory from which you will run the script  
 You can create your credentials here [https://console.developers.google.com/apis/credentials](https://console.developers.google.com/apis/credentials)  

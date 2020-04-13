@@ -43,6 +43,7 @@ def main():
                 if closest[0] == -1 or current < closest[0]:
                     closest[0] = current
                     closest[1] = summary
+                    break
 
     t = datetime.datetime.fromtimestamp(closest[0])
     print(f"{t:%H:%M} " + get_display(closest[1]) )
