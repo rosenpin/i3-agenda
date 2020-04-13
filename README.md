@@ -6,6 +6,9 @@ You can take this input and show it on your i3-bar or polybar
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest  
 It will print the time and title of the closest event  
 
+## Where's the code
+It's here [i3_agenda/__init__.py](i3_agenda/__init__.py)
+
 # Setup
 
 ## Dependencies
