@@ -59,7 +59,7 @@ def main():
     closest = get_closest(events)
         
     t = datetime.datetime.fromtimestamp(closest[0])
-    print(f"{t:%H:%M} " + get_display(closest[1]) )
+    print(f"{t:%Y-%m-%d@%H:%M} " + get_display(closest[1]) )
 
 def getEvents(service):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
