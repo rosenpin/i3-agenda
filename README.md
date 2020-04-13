@@ -9,6 +9,7 @@ Example polybar configuration
 [module/agenda]
 type = custom/script
 exec = cd ~/i3-agenda/ && python i3-agenda.py
+click-left = chromium https://calendar.google.com/calendar/r/day
 interval = 60
 ```
 
