@@ -1,4 +1,5 @@
 from __future__ import print_function
+from bidi.algorithm import get_display
 import time
 import datetime
 import pickle
@@ -43,7 +44,7 @@ def main():
                     closest[0] = current
                     closest[1] = summary
 
-    print("next: " + closest[1])
+    print("next: " + get_display(closest[1]))
 
 def connect():
     """Shows basic usage of the Google Calendar API.
@@ -70,7 +71,6 @@ def connect():
 
     service = build('calendar', 'v3', credentials=creds)
     return service
-
 
 if __name__ == '__main__':
     main()
