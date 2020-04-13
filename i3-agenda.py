@@ -17,6 +17,7 @@ import subprocess
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 TMP_TOKEN = '/tmp/i3agenda_google_token.pickle'
 CACHE_PATH = '/tmp/i3agenda_cache.txt'
+DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
 
 button = os.getenv("BLOCK_BUTTON", "") # i3blocks use this envvar to check the click
 
@@ -44,7 +45,7 @@ def main():
     args = parser.parse_args()
 
     if button is not "":
-        subprocess.Popen(["xdg-open", "https://calendar.google.com/calendar/r/day"])
+        subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
         
     events = load_cache(args.cachettl)
     if events == None:
