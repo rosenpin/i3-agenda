@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="i3-agenda",
-    version="0.0.0",
+    version="1.0",
     author="Tomer Rosenfeld",
     author_email="mail@tomerrosenfeld.com",
     description="Show your next google calendar event in polybar or i3-bar",
