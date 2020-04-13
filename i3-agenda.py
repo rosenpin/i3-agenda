@@ -94,6 +94,9 @@ def get_event_time(full_time):
     else: 
         format = '%Y-%m-%d'
 
+    # Python introduced the ability to parse ":" in the timezone format (in strptime()) only from version 3.7 and up.
+    # We need to remove the : before the timezone to support older versions
+    # See https://stackoverflow.com/questions/30999230/how-to-parse-timezone-with-colon for more information
     if full_time[-3] == ":":
         full_time = full_time[:-3]+full_time[-2:]
 
