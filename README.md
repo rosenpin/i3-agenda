@@ -58,4 +58,11 @@ bar {
 Example output of the script:  
 ```11:00 Grocery shopping```
 
+Example i3block configuration
+```
+[i3-agenda]
+command=/usr/bin/python3 ~/.config/i3blocks/scripts/i3-agenda.py -c ~/.google_credentials.json -ttl 60
+interval=60
+```
+
 ![example](art/screenshot.png)
