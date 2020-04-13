@@ -18,7 +18,8 @@ CACHE_PATH = '/tmp/i3agenda_cache.txt'
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
-                   help='path to your credentials.json file')
+                    default='',
+                    help='path to your credentials.json file')
 parser.add_argument('--cachettl', '-ttl', type=int, default=30,
                    help='time for cache to be kept in minutes')
 
