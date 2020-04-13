@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import json
@@ -74,20 +74,21 @@ def getEvents(service):
             continue
 
         for event in events:
-            end_time = get_unix_time(event['end'].get('dateTime', event['end'].get('date')))
+            end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
             start_time = event['start'].get('dateTime', event['start'].get('date'))
-            unix_time = get_unix_time(start_time)
+            unix_time = get_event_time(start_time)
             all.append(Event(event['summary'], start_time, unix_time, end_time))
 
     return all
 
-def get_unix_time(full_time):
+def get_event_time(full_time):
     if "T" in full_time:
         format = '%Y-%m-%dT%H:%M:%S%z'
     else: 
         format = '%Y-%m-%d'
 
-    return time.mktime(datetime.datetime.strptime(full_time, format).timetuple())
+    return time.mktime(datetime.datetime.strptime(full_time,
+                                                  format).astimezone().timetuple())
 
 def get_closest(events):
     closest = [-1,""]
