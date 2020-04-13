@@ -28,15 +28,17 @@ Another great guide can be found here if you're still having trouble: [https://g
 3. Proceed to installation phase
 
 ## Installation
+
+### Arch Linux
+1. `yay -S i3-agenda-git`
+2. Add configuration to your bar (examples in the Examples section below)
+
+### Other Linux
 After installing the dependencies, and downloading the credentials file,  
 1. Clone the repo to a local directory `cd ~/ && git clone https://github.com/rosenpin/i3-agenda && cd i3-agenda`
 3. Run the script `python3 i3_agenda/__init__.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.   
 4. Optional: you can run `sudo python setup.py install` to add the script to your path so you can run `i3-agenda` anywhere
 5. Add configuration to your bar (examples in the Examples section below)
-
-### Arch Linux
-1. `yay -S i3-agenda-git`
-2. Add configuration to your bar (examples in the Examples section below)
 
 # Usage
 ## Filter displayed calendars
