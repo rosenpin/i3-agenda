@@ -18,7 +18,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 TMP_TOKEN = '/tmp/i3agenda_google_token.pickle'
 CACHE_PATH = '/tmp/i3agenda_cache.txt'
 
-button = os.getenv("BLOCK_BUTTON", "nope") # i3blocks use this envvar to check the click
+button = os.getenv("BLOCK_BUTTON", "") # i3blocks use this envvar to check the click
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
