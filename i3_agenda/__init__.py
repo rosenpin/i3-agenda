@@ -59,9 +59,12 @@ def main():
         save_cache(events)
 
     closest = get_closest(events)
+    if closest is None:
+        print("No events")
+        return
         
-    t = datetime.datetime.fromtimestamp(closest[0])
-    print(f"{t:%H:%M} " + get_display(closest[1]) )
+    t = datetime.datetime.fromtimestamp(closest.unix_time)
+    print(f"{t:%H:%M} " + get_display(closest.summary))
 
 def getEvents(service, allowed_calendars_ids):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
@@ -108,16 +111,16 @@ def get_event_time(full_time):
     return time.mktime(datetime.datetime.strptime(full_time,
                                                   format).astimezone().timetuple())
 
-def get_closest(events):
-    closest = [-1,""]
+def get_closest(events) -> Event:
+    closest = None
     for event in events:
+        # Don't show all day events
         if "T" in event.start_time:
-            current = event.unix_time
+            # If the event already passed
             if event.end_time < time.time():
                 continue
-            if closest[0] == -1 or current < closest[0]:
-                closest[0] = current
-                closest[1] = event.summary
+            if closest is None or event.unix_time < closest.unix_time:
+                closest = event
 
     return closest
 
