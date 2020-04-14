@@ -21,14 +21,14 @@ DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
 
 button = os.getenv("BLOCK_BUTTON", "") # i3blocks use this envvar to check the click
 
-allowed_calendars_ids = [] # populate with the Google Calendar IDs you are interested in
-
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials', '-c', type=str,
                     default='',
                     help='path to your credentials.json file')
 parser.add_argument('--cachettl', '-ttl', type=int, default=30,
                    help='time for cache to be kept in minutes')
+parser.add_argument('--ids', '-i', type=str, default=[], nargs='+',
+                    help='list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched')
 
 class Event():
     def __init__(self, summary, start_time, unix_time, end_time):
@@ -47,13 +47,15 @@ class EventEncoder(json.JSONEncoder):
 def main():
     args = parser.parse_args()
 
+    allowed_calendars_ids = args.ids
+
     if button != "":
         subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
         
     events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
-        events = getEvents(service)
+        events = getEvents(service, allowed_calendars_ids)
         save_cache(events)
 
     closest = get_closest(events)
@@ -61,7 +63,7 @@ def main():
     t = datetime.datetime.fromtimestamp(closest[0])
     print(f"{t:%H:%M} " + get_display(closest[1]) )
 
-def getEvents(service):
+def getEvents(service, allowed_calendars_ids):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
