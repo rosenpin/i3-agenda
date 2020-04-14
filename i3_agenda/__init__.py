@@ -31,8 +31,8 @@ parser.add_argument('--ids', '-i', type=str, default=[], nargs='+',
                     help='list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched')
 
 class Event():
-    def __init__(self, summary, start_time, unix_time, end_time):
-        self.start_time = start_time
+    def __init__(self, summary, is_allday, unix_time, end_time):
+        self.is_allday = is_allday
         self.summary = summary
         self.unix_time = unix_time
         self.end_time = end_time
@@ -92,9 +92,12 @@ def getEvents(service, allowed_calendars_ids):
             end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
             start_time = event['start'].get('dateTime', event['start'].get('date'))
             unix_time = get_event_time(start_time)
-            all.append(Event(event['summary'], start_time, unix_time, end_time))
+            all.append(Event(event['summary'], is_allday(start_time), unix_time, end_time))
 
     return all
+
+def is_allday(start_time) -> bool:
+    return "T" not in start_time
 
 def get_event_time(full_time):
     if "T" in full_time:
@@ -115,12 +118,15 @@ def get_closest(events) -> Event:
     closest = None
     for event in events:
         # Don't show all day events
-        if "T" in event.start_time:
-            # If the event already passed
-            if event.end_time < time.time():
-                continue
-            if closest is None or event.unix_time < closest.unix_time:
-                closest = event
+        if event.is_allday:
+            continue
+
+        # If the event already ended
+        if event.end_time < time.time():
+            continue
+
+        if closest is None or event.unix_time < closest.unix_time:
+            closest = event
 
     return closest
 
@@ -132,11 +138,16 @@ def load_cache(cachettl):
         return None
 
     events = []
-    with open(CACHE_PATH, 'r') as f:
-        raw = json.loads(f.read())
-        for event in raw:
-            events.append(Event(event['summary'], event['start_time'], event['unix_time'], event['end_time']))
-    return events
+
+    try:
+        with open(CACHE_PATH, 'r') as f:
+            raw = json.loads(f.read())
+            for event in raw:
+                events.append(Event(event['summary'], event['is_allday'], event['unix_time'], event['end_time']))
+        return events
+    except Exception:
+        # Invalid cache
+        return None
 
 def save_cache(events):
     with open(CACHE_PATH, 'w+') as f:
