@@ -1,8 +1,11 @@
 [![AUR version](https://img.shields.io/aur/version/i3-agenda?style=flat-square&logo=arch-linux)](https://aur.archlinux.org/packages/i3-agenda/)
 [![PyPI](https://img.shields.io/pypi/v/i3-agenda?style=flat-square&logo=python)](https://pypi.org/project/i3-agenda/)
+
+
 # What is this?
 It's a script that communicates with Google's calendar API, it will go through all your calendars and print the next calendar event details.\
 You can take this input and show it on your i3-bar or polybar
+![example](art/screenshot.png)
 
 ## How does it work
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest.\
@@ -86,6 +89,3 @@ interval=60
 
 Example output of the script:\
 ```10:55 Grocery shopping```
-
-
-![example](art/screenshot.png)
