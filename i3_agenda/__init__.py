@@ -29,7 +29,8 @@ parser.add_argument('--cachettl', '-ttl', type=int, default=30,
                    help='time for cache to be kept in minutes')
 parser.add_argument('--ids', '-i', type=str, default=[], nargs='+',
                     help='list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched')
-
+parser.add_argument('--maxres', '-r', type=int, default=10, 
+                    help='Maximum number of events returned')
 class Event():
     def __init__(self, summary, is_allday, unix_time, end_time):
         self.is_allday = is_allday
@@ -81,7 +82,7 @@ def getEvents(service, allowed_calendars_ids):
     all = []
     for id in calendar_ids:
         events_result = service.events().list(calendarId=id, timeMin=now,
-                                            maxResults=10, singleEvents=True,
+                                            maxResults=args.maxres, singleEvents=True,
                                             orderBy='startTime').execute()
         events = events_result.get('items', [])
 
