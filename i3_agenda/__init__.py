@@ -91,8 +91,7 @@ def getEvents(service, allowed_calendars_ids, max_results):
     while True:
         calendar_list = service.calendarList().list().execute()
         for calendar_list_entry in calendar_list['items']:
-            if not allowed_calendars_ids or calendar_list_entry[
-                    'id'] in allowed_calendars_ids:
+            if not allowed_calendars_ids or calendar_list_entry['id'] in allowed_calendars_ids:
                 calendar_ids.append(calendar_list_entry['id'])
         page_token = calendar_list.get('nextPageToken')
         if not page_token:
@@ -111,10 +110,8 @@ def getEvents(service, allowed_calendars_ids, max_results):
             continue
 
         for event in events:
-            end_time = get_event_time(event['end'].get(
-                'dateTime', event['end'].get('date')))
-            start_time = event['start'].get('dateTime',
-                                            event['start'].get('date'))
+            end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
+            start_time = event['start'].get('dateTime', event['start'].get('date'))
             unix_time = get_event_time(start_time)
             all.append(Event(event['summary'], is_allday(start_time), unix_time, end_time))
 
