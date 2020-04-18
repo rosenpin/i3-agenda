@@ -23,8 +23,8 @@ CACHE_PATH = f"{CONF_DIR}/i3agenda_cache.txt"
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
 
-button = os.getenv("BLOCK_BUTTON",
-                   "")  # i3blocks use this envvar to check the click
+# i3blocks use this envvar to check the click
+button = os.getenv("BLOCK_BUTTON", "")  
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials',
@@ -36,17 +36,18 @@ parser.add_argument('--cachettl',
                     '-ttl',
                     type=int,
                     default=30,
-                    help='time for cache to be kept in minutes')
-parser.add_argument(
-    '--ids',
-    '-i',
-    type=str,
-    default=[],
-    nargs='+',
-    help=
-    'list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched'
-)
-
+                   help='time for cache to be kept in minutes')
+parser.add_argument('--ids',
+                    '-i',
+                    type=str,
+                    default=[],
+                    nargs='+',
+                    help='list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched')
+parser.add_argument('--maxres',
+                    '-r',
+                    type=int,
+                    default=10, 
+                    help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
 
 class Event():
     def __init__(self, summary, is_allday, unix_time, end_time):
@@ -55,14 +56,12 @@ class Event():
         self.unix_time = unix_time
         self.end_time = end_time
 
-
 class EventEncoder(json.JSONEncoder):
     def default(self, o):  # pylint: disable=E0202
         if isinstance(o, Event):
             return o.__dict__
         else:
             return json.JSONEncoder.default(self, o)
-
 
 def main():
     args = parser.parse_args()
@@ -75,7 +74,7 @@ def main():
     events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
-        events = getEvents(service, allowed_calendars_ids)
+        events = getEvents(service, allowed_calendars_ids, args.maxres)
         save_cache(events)
 
     closest = get_closest(events)
@@ -86,10 +85,8 @@ def main():
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
 
-
-def getEvents(service, allowed_calendars_ids):
-    now = datetime.datetime.utcnow().isoformat(
-    ) + 'Z'  # 'Z' indicates UTC time
+def getEvents(service, allowed_calendars_ids, max_results):
+    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
         calendar_list = service.calendarList().list().execute()
@@ -105,7 +102,7 @@ def getEvents(service, allowed_calendars_ids):
     for id in calendar_ids:
         events_result = service.events().list(calendarId=id,
                                               timeMin=now,
-                                              maxResults=10,
+                                              maxResults=max_results,
                                               singleEvents=True,
                                               orderBy='startTime').execute()
         events = events_result.get('items', [])
@@ -119,9 +116,7 @@ def getEvents(service, allowed_calendars_ids):
             start_time = event['start'].get('dateTime',
                                             event['start'].get('date'))
             unix_time = get_event_time(start_time)
-            all.append(
-                Event(event['summary'], is_allday(start_time), unix_time,
-                      end_time))
+            all.append(Event(event['summary'], is_allday(start_time), unix_time, end_time))
 
     return all
 
@@ -177,8 +172,8 @@ def load_cache(cachettl):
             raw = json.loads(f.read())
             for event in raw:
                 events.append(
-                    Event(event['summary'], event['is_allday'],
-                          event['unix_time'], event['end_time']))
+                    Event(event['summary'], event['is_allday'], event['unix_time'], event['end_time'])
+                )
         return events
     except Exception:
         # Invalid cache
