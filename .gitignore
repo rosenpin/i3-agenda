@@ -4,3 +4,5 @@ build/
 dist/
 i3_agenda/__pycache__
 *.egg-info
+.vim/coc-settings.json
+
