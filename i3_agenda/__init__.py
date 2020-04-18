@@ -67,7 +67,7 @@ def main():
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
 
-def getEvents(service, allowed_calendars_ids, maxResults):
+def getEvents(service, allowed_calendars_ids, max_results):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
@@ -82,7 +82,7 @@ def getEvents(service, allowed_calendars_ids, maxResults):
     all = []
     for id in calendar_ids:
         events_result = service.events().list(calendarId=id, timeMin=now,
-                                            maxResults, singleEvents=True,
+                                            maxResults=max_results, singleEvents=True,
                                             orderBy='startTime').execute()
         events = events_result.get('items', [])
 
