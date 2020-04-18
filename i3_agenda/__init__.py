@@ -37,6 +37,10 @@ parser.add_argument('--cachettl',
                     type=int,
                     default=30,
                    help='time for cache to be kept in minutes')
+parser.add_argument('--today',
+                    '-d',
+                    default=False,
+                    help='print only today events')
 parser.add_argument('--ids',
                     '-i',
                     type=str,
@@ -74,7 +78,8 @@ def main():
     events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
-        events = getEvents(service, allowed_calendars_ids, args.maxres)
+        events = getEvents(service, allowed_calendars_ids, args.maxres,
+                           args.today)
         save_cache(events)
 
     closest = get_closest(events)
@@ -85,8 +90,9 @@ def main():
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
 
-def getEvents(service, allowed_calendars_ids, max_results):
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+def getEvents(service, allowed_calendars_ids, max_results, today_only=False):
+    now = datetime.datetime.utcnow()
+    now_rfc3339= now.isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
         calendar_list = service.calendarList().list().execute()
@@ -99,11 +105,20 @@ def getEvents(service, allowed_calendars_ids, max_results):
 
     all = []
     for id in calendar_ids:
-        events_result = service.events().list(calendarId=id,
-                                              timeMin=now,
-                                              maxResults=max_results,
-                                              singleEvents=True,
-                                              orderBy='startTime').execute()
+        if today_only:
+            midnight_rfc3339 = now.replace(hour=23, minute=39, second=59).isoformat() + 'Z'
+            events_result = service.events().list(calendarId=id,
+                                                timeMin=now_rfc3339,
+                                                timeMax=midnight_rfc3339,
+                                                maxResults=max_results,
+                                                singleEvents=True,
+                                                orderBy='startTime').execute()
+        else:
+            events_result = service.events().list(calendarId=id,
+                                                timeMin=now_rfc3339,
+                                                maxResults=max_results,
+                                                singleEvents=True,
+                                                orderBy='startTime').execute()
         events = events_result.get('items', [])
 
         if not events:
