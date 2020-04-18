@@ -29,7 +29,8 @@ parser.add_argument('--cachettl', '-ttl', type=int, default=30,
                    help='time for cache to be kept in minutes')
 parser.add_argument('--ids', '-i', type=str, default=[], nargs='+',
                     help='list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched')
-
+parser.add_argument('--maxres', '-r', type=int, default=10, 
+                    help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
 class Event():
     def __init__(self, summary, is_allday, unix_time, end_time):
         self.is_allday = is_allday
@@ -55,7 +56,7 @@ def main():
     events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
-        events = getEvents(service, allowed_calendars_ids)
+        events = getEvents(service, allowed_calendars_ids, args.maxres)
         save_cache(events)
 
     closest = get_closest(events)
@@ -66,7 +67,7 @@ def main():
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
 
-def getEvents(service, allowed_calendars_ids):
+def getEvents(service, allowed_calendars_ids, max_results):
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
     while True:
@@ -81,7 +82,7 @@ def getEvents(service, allowed_calendars_ids):
     all = []
     for id in calendar_ids:
         events_result = service.events().list(calendarId=id, timeMin=now,
-                                            maxResults=10, singleEvents=True,
+                                            maxResults=max_results, singleEvents=True,
                                             orderBy='startTime').execute()
         events = events_result.get('items', [])
 
