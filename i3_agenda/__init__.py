@@ -53,6 +53,10 @@ parser.add_argument('--maxres',
                     type=int,
                     default=10, 
                     help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
+parser.add_argument('--no-event-text',
+                    default="No events",
+                    metavar="TEXT",
+                    help='text to display when there are no events')
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
@@ -85,7 +89,7 @@ def main():
 
     closest = get_closest(events)
     if closest is None:
-        print("No events")
+        print(args.no_event_text)
         return
 
     t = datetime.datetime.fromtimestamp(closest.unix_time)
