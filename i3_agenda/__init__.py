@@ -39,7 +39,7 @@ parser.add_argument('--cachettl',
                    help='time for cache to be kept in minutes')
 parser.add_argument('--today',
                     '-d',
-                    default=False,
+                    action='store_true',
                     help='print only today events')
 parser.add_argument('--ids',
                     '-i',
