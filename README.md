@@ -3,8 +3,8 @@
 
 
 # What is this?
-It's a script that communicates with Google's calendar API, it will go through all your calendars and print the next calendar event details.\
-You can take this input and show it on your i3-bar or polybar
+It's a script that communicates with Google's calendar API, it will go through your calendars and print the next calendar event details.\
+You can take this output and show it on your i3-bar or polybar
 
 ![example](art/screenshot.png)
 
