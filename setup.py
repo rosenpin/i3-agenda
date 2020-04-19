@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="i3-agenda",
-    version="1.0",
+    version="1.1",
     author="Tomer Rosenfeld",
     author_email="mail@tomerrosenfeld.com",
     description="Show your next google calendar event in polybar or i3-bar",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rosenpin/i3-agenda",
-    download_url="https://github.com/rosenpin/i3-agenda/archive/1.0.tar.gz",
+    download_url="https://github.com/rosenpin/i3-agenda/archive/1.1.tar.gz",
     packages=setuptools.find_packages(),
     license="Unlicense",
     classifiers=[
