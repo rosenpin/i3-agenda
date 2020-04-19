@@ -3,8 +3,8 @@
 
 
 # What is this?
-It's a script that communicates with Google's calendar API, it will go through all your calendars and print the next calendar event details.\
-You can take this input and show it on your i3-bar or polybar
+It's a script that communicates with Google's calendar API, it will go through your calendars and print the next calendar event details.\
+You can take this output and show it on your i3-bar or polybar
 
 ![example](art/screenshot.png)
 
@@ -60,6 +60,10 @@ To display events only from certain calendars use the `--ids` parameter and pass
 To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
 
 Leaving the list empty will fetch all calendars (default behavior).
+
+## Display only events for the current day
+
+To only display events for today use the `--today` parameter.
 
 ## Notes
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
