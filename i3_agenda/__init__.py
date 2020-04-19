@@ -25,7 +25,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
 
 # i3blocks use this envvar to check the click
-button = os.getenv("BLOCK_BUTTON", "")  
+button = os.getenv("BLOCK_BUTTON", "")
 
 parser = argparse.ArgumentParser(description='Show next Google Calendar event')
 parser.add_argument('--credentials',
@@ -51,8 +51,17 @@ parser.add_argument('--ids',
 parser.add_argument('--maxres',
                     '-r',
                     type=int,
-                    default=10, 
+                    default=10,
                     help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
+parser.add_argument('--no-event-text',
+                    default="No events",
+                    metavar="TEXT",
+                    help='text to display when there are no events')
+parser.add_argument('--update',
+                    '-u',
+                    action='store_true',
+                    default=False,
+                    help='when using this flag it will not load previous results from cache, it will however save new results to cache. You can use this flag to refresh all the cache forcefully')
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
@@ -76,7 +85,9 @@ def main():
     if button != "":
         subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
 
-    events = load_cache(args.cachettl)
+    events = None
+    if not args.update:
+        events = load_cache(args.cachettl)
     if events == None:
         service = connect(args.credentials)
         events = getEvents(service, allowed_calendars_ids, args.maxres,
@@ -85,7 +96,7 @@ def main():
 
     closest = get_closest(events)
     if closest is None:
-        print("No events")
+        print(args.no_event_text)
         return
 
     t = datetime.datetime.fromtimestamp(closest.unix_time)
