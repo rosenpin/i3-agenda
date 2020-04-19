@@ -61,6 +61,10 @@ To obtain the calendar id you can check the settings page of the calendar on Goo
 
 Leaving the list empty will fetch all calendars (default behavior).
 
+## Display only events for the current day
+
+To only display events for today use the `--today` parameter.
+
 ## Notes
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
 
