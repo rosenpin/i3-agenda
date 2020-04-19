@@ -11,11 +11,12 @@ import pickle
 import subprocess
 import time
 from os.path import expanduser
+from typing import Optional, List
 
 from bidi.algorithm import get_display
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
+from googleapiclient.discovery import build, Resource
 
 CONF_DIR = expanduser('~') + os.path.sep + ".i3agenda"
 TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"
@@ -54,7 +55,7 @@ parser.add_argument('--maxres',
                     help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
 
 class Event():
-    def __init__(self, summary, is_allday, unix_time, end_time):
+    def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
         self.is_allday = is_allday
         self.summary = summary
         self.unix_time = unix_time
@@ -90,7 +91,7 @@ def main():
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
 
-def getEvents(service, allowed_calendars_ids, max_results, today_only=False):
+def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today_only=False) -> List[Event]:
     now = datetime.datetime.utcnow()
     now_rfc3339= now.isoformat() + 'Z' # 'Z' indicates UTC time
     calendar_ids = []
@@ -133,11 +134,11 @@ def getEvents(service, allowed_calendars_ids, max_results, today_only=False):
     return all
 
 
-def is_allday(start_time) -> bool:
+def is_allday(start_time: str) -> bool:
     return "T" not in start_time
 
 
-def get_event_time(full_time):
+def get_event_time(full_time: str) -> float:
     if "T" in full_time:
         format = '%Y-%m-%dT%H:%M:%S%z'
     else:
@@ -153,7 +154,7 @@ def get_event_time(full_time):
         datetime.datetime.strptime(full_time, format).astimezone().timetuple())
 
 
-def get_closest(events) -> Event:
+def get_closest(events: List[Event]) -> Optional[Event]:
     closest = None
     for event in events:
         # Don't show all day events
@@ -170,7 +171,7 @@ def get_closest(events) -> Event:
     return closest
 
 
-def load_cache(cachettl):
+def load_cache(cachettl: int) -> Optional[List[Event]]:
     if not os.path.exists(CACHE_PATH):
         return None
 
@@ -192,12 +193,12 @@ def load_cache(cachettl):
         return None
 
 
-def save_cache(events):
+def save_cache(events: List[Event]) -> None:
     with open(CACHE_PATH, 'w+') as f:
         f.write(EventEncoder().encode(events))
 
 
-def connect(credspath):
+def connect(credspath: str) -> Resource:
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
