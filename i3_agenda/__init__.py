@@ -38,10 +38,11 @@ parser.add_argument('--cachettl',
                     type=int,
                     default=30,
                    help='time for cache to be kept in minutes')
-parser.add_argument('--today',
-                    '-d',
+parser.add_argument('--update',
+                    '-u',
                     action='store_true',
-                    help='print only today events')
+                    default=False,
+                    help='when using this flag it will not load previous results from cache, it will however save new results to cache. You can use this flag to refresh all the cache forcefully')
 parser.add_argument('--ids',
                     '-i',
                     type=str,
@@ -53,15 +54,14 @@ parser.add_argument('--maxres',
                     type=int,
                     default=10,
                     help='max number of events to query Google\'s API for each of your calendars. Increase this number if you have lot of events in your google calendar')
+parser.add_argument('--today',
+                    '-d',
+                    action='store_true',
+                    help='print only today events')
 parser.add_argument('--no-event-text',
                     default="No events",
                     metavar="TEXT",
                     help='text to display when there are no events')
-parser.add_argument('--update',
-                    '-u',
-                    action='store_true',
-                    default=False,
-                    help='when using this flag it will not load previous results from cache, it will however save new results to cache. You can use this flag to refresh all the cache forcefully')
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
