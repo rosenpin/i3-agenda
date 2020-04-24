@@ -31,13 +31,13 @@ Another great guide can be found here if you're still having trouble: [https://g
 ## Installation
 After downloading the credentials file, install the package.
 
-### Arch Linux (AUR)
-1. `yay -S i3-agenda-git`
+### Pip
+1. `sudo pip install i3-agenda`
 2. Try running `i3-agenda -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step.
 3. Add configuration to your bar (examples in the Examples section below).
 
-### Pip
-1. `sudo pip install i3-agenda`
+### Arch Linux (AUR)
+1. `yay -S i3-agenda-git`
 2. Try running `i3-agenda -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step.
 3. Add configuration to your bar (examples in the Examples section below).
 
