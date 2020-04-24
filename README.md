@@ -53,6 +53,23 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
 5. Add configuration to your bar (examples in the Examples section below).
 
 # Usage
+>  -h, --help            show this help message and exit
+>  --credentials CREDENTIALS, -c CREDENTIALS
+>                        path to your credentials.json file
+>  --cachettl CACHETTL, -ttl CACHETTL
+>                        time for cache to be kept in minutes
+>  --today, -d           print only today events
+>  --ids IDS [IDS ...], -i IDS [IDS ...]
+>                        list of calendar ids to fetch, space separated. If none is specified all
+>                        calendars will be fetched
+>  --maxres MAXRES, -r MAXRES
+>                        max number of events to query Google's API for each of your calendars.
+>                        Increase this number if you have lot of events in your google calendar
+>  --no-event-text TEXT  text to display when there are no events
+>  --update, -u          when using this flag it will not load previous results from cache, it
+>                        will however save new results to cache. You can use this flag to refresh
+>                        all the cache forcefully
+
 ## Filter displayed calendars
 
 To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.
@@ -74,13 +91,17 @@ This means that if you create a new event, it might take an hour for the script 
 
 ## Examples
 Example polybar configuration:
-```
+``` ini
 modules-center = agenda
 ....
 [module/agenda]
 type = custom/script
+; Show the next event and forget cache automatically every 60 minutes
 exec = i3-agenda -c ~/.google_credentials.json -ttl 60
+; left click to launch Google Calendar
 click-left = chromium https://calendar.google.com/calendar/r/day
+; right click force update the cache, if for example you just added a new event
+click-right = notify-send "syncing..." && i3-agenda -c ~/.google_credentials.json --update && notify-send -t 2000 "sync finished"
 interval = 60
 ```
 
