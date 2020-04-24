@@ -6,14 +6,11 @@
 It's a script that communicates with Google's calendar API, it will go through your calendars and print the next calendar event details.\
 You can take this output and show it on your i3-bar or polybar
 
-![example](art/screenshot.png)
+![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/screenshot.png)
 
 ## How does it work
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest.\
 It will print the time and title of the closest event.
-
-## Where's the code
-It's here [i3_agenda/\_\_init__.py](https://github.com/rosenpin/i3-agenda/tree/master/i3_agenda/__init__.py).
 
 # Setup
 
