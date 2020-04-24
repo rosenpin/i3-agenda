@@ -6,14 +6,11 @@
 It's a script that communicates with Google's calendar API, it will go through your calendars and print the next calendar event details.\
 You can take this output and show it on your i3-bar or polybar
 
-![example](art/screenshot.png)
+![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/screenshot.png)
 
 ## How does it work
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest.\
 It will print the time and title of the closest event.
-
-## Where's the code
-It's here [i3_agenda/\_\_init__.py](https://github.com/rosenpin/i3-agenda/tree/master/i3_agenda/__init__.py).
 
 # Setup
 
@@ -31,13 +28,13 @@ Another great guide can be found here if you're still having trouble: [https://g
 ## Installation
 After downloading the credentials file, install the package.
 
-### Arch Linux (AUR)
-1. `yay -S i3-agenda-git`
+### Pip
+1. `sudo pip install i3-agenda`
 2. Try running `i3-agenda -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step.
 3. Add configuration to your bar (examples in the Examples section below).
 
-### Pip
-1. `sudo pip install i3-agenda`
+### Arch Linux (AUR)
+1. `yay -S i3-agenda-git`
 2. Try running `i3-agenda -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step.
 3. Add configuration to your bar (examples in the Examples section below).
 
@@ -53,34 +50,48 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
 5. Add configuration to your bar (examples in the Examples section below).
 
 # Usage
-## Filter displayed calendars
+```
+  -h, --help            show this help message and exit
+  --credentials CREDENTIALS, -c CREDENTIALS
+                        path to your credentials.json file
+  --cachettl CACHETTL, -ttl CACHETTL
+                        time for cache to be kept in minutes
+  --update, -u          when using this flag it will not load previous results from cache, it will however save new results to cache. You can use this flag to refresh all the cache forcefully
+  --ids IDS [IDS ...], -i IDS [IDS ...]
+                        list of calendar ids to fetch, space separated. If none is specified all calendars will be fetched
+  --maxres MAXRES, -r MAXRES
+                        max number of events to query Google's API for each of your calendars. Increase this number if you have lot of events in your google calendar
+  --today, -d           print only today events
+  --no-event-text TEXT  text to display when there are no events
+```
 
-To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.
-
-To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
-
+### Filter displayed calendars
+To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.\
+To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).\
 Leaving the list empty will fetch all calendars (default behavior).
 
-## Display only events for the current day
-
-To only display events for today use the `--today` parameter.
-
 ## Notes
+### Known issues
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
 
+### Caching
 It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag.\
 Example: `i3-agenda --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour).\
 This means that if you create a new event, it might take an hour for the script to recognize it.
 
 ## Examples
 Example polybar configuration:
-```
+``` ini
 modules-center = agenda
 ....
 [module/agenda]
 type = custom/script
+; Show the next event and forget cache automatically every 60 minutes
 exec = i3-agenda -c ~/.google_credentials.json -ttl 60
+; left click to launch Google Calendar
 click-left = chromium https://calendar.google.com/calendar/r/day
+; right click force update the cache, if for example you just added a new event
+click-right = notify-send "syncing..." && i3-agenda -c ~/.google_credentials.json --update && notify-send -t 2000 "sync finished"
 interval = 60
 ```
 
