@@ -72,21 +72,16 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
                         all the cache forcefully
 ```
 
-## Filter displayed calendars
-
-To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.
-
-To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).
-
+### Filter displayed calendars
+To display events only from certain calendars use the `--ids` parameter and pass a list of calendar id, space separated.\
+To obtain the calendar id you can check the settings page of the calendar on Google (usually is the owner email, if it's not shared).\
 Leaving the list empty will fetch all calendars (default behavior).
 
-## Display only events for the current day
-
-To only display events for today use the `--today` parameter.
-
 ## Notes
+### Known issues
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
 
+### Caching
 It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag.\
 Example: `i3-agenda --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour).\
 This means that if you create a new event, it might take an hour for the script to recognize it.
