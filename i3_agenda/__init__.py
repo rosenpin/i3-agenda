@@ -62,6 +62,10 @@ parser.add_argument('--no-event-text',
                     default="No events",
                     metavar="TEXT",
                     help='text to display when there are no events')
+parser.add_argument('--hide-event-after',
+                    type=int,
+                    default=-1,
+                    help='minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends')
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
@@ -94,7 +98,7 @@ def main():
                            args.today)
         save_cache(events)
 
-    closest = get_closest(events)
+    closest = get_closest(events, args.hide_event_after)
     if closest is None:
         print(args.no_event_text)
         return
@@ -165,7 +169,7 @@ def get_event_time(full_time: str) -> float:
         datetime.datetime.strptime(full_time, format).astimezone().timetuple())
 
 
-def get_closest(events: List[Event]) -> Optional[Event]:
+def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
     closest = None
     for event in events:
         # Don't show all day events
@@ -175,6 +179,11 @@ def get_closest(events: List[Event]) -> Optional[Event]:
         # If the event already ended
         if event.end_time < time.time():
             continue
+
+        if hide_event_after > -1:
+        # If the event started more than hide_event_after ago
+            if event.unix_time + 60 * hide_event_after < time.time():
+                continue
 
         if closest is None or event.unix_time < closest.unix_time:
             closest = event

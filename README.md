@@ -63,6 +63,8 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
                         max number of events to query Google's API for each of your calendars. Increase this number if you have lot of events in your google calendar
   --today, -d           print only today events
   --no-event-text TEXT  text to display when there are no events
+  --hide-event-after MINUTES
+                        minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends
 ```
 
 ### Filter displayed calendars
