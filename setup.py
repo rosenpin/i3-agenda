@@ -22,7 +22,8 @@ setuptools.setup(
         "python-bidi",
         "google-api-python-client",
         "google-auth-httplib2",
-        "google-auth-oauthlib"
+        "google-auth-oauthlib",
+        "aiohttp"
     ],
     entry_points={
         "console_scripts": [
