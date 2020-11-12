@@ -150,10 +150,10 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
             start_time = event['start'].get('dateTime', event['start'].get('date'))
             unix_time = get_event_time(start_time)
-            try:
+            
+            location = None
+            if 'location' in event:
                 location = event['location']
-            except KeyError:
-                location = None
 
             all.append(Event(event['summary'],
                              is_allday(start_time),
