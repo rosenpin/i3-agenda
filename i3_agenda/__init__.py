@@ -68,11 +68,12 @@ parser.add_argument('--hide-event-after',
                     help='minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends')
 
 class Event():
-    def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float):
+    def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float, location: str):
         self.is_allday = is_allday
         self.summary = summary
         self.unix_time = unix_time
         self.end_time = end_time
+        self.location = location
 
 class EventEncoder(json.JSONEncoder):
     def default(self, o):  # pylint: disable=E0202
@@ -85,9 +86,6 @@ def main():
     args = parser.parse_args()
 
     allowed_calendars_ids = args.ids
-
-    if button != "":
-        subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
 
     events = None
     if not args.update:
@@ -102,6 +100,14 @@ def main():
     if closest is None:
         print(args.no_event_text)
         return
+
+    if button != "":
+        if button == '1':
+            print("Opening calendar page...")
+            subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
+        elif button == '3':
+            print("Opening location link...")
+            subprocess.Popen(["xdg-open", closest.location])
 
     t = datetime.datetime.fromtimestamp(closest.unix_time)
     print(f"{t:%H:%M} " + get_display(closest.summary))
@@ -144,7 +150,16 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
             start_time = event['start'].get('dateTime', event['start'].get('date'))
             unix_time = get_event_time(start_time)
-            all.append(Event(event['summary'], is_allday(start_time), unix_time, end_time))
+            
+            location = None
+            if 'location' in event:
+                location = event['location']
+
+            all.append(Event(event['summary'],
+                             is_allday(start_time),
+                             unix_time,
+                             end_time,
+                             location))
 
     return all
 
@@ -205,9 +220,13 @@ def load_cache(cachettl: int) -> Optional[List[Event]]:
             raw = json.loads(f.read())
             for event in raw:
                 events.append(
-                    Event(event['summary'], event['is_allday'], event['unix_time'], event['end_time'])
+                    Event(event['summary'],
+                          event['is_allday'],
+                          event['unix_time'],
+                          event['end_time'],
+                          event['location'])
                 )
-        return events
+        return events    
     except Exception:
         # Invalid cache
         return None
