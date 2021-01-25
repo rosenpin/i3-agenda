@@ -121,7 +121,7 @@ def main():
     result = str(get_display(closest.summary))
 
     if (event.date() == today.date()):
-        print(f"{event:Today at %H:%M} " + result)
+        print(f"{event:%H:%M} " + result)
     elif (event.date() == tomorrow.date()):
         print(f"{event:Tomorrow at %H:%M} " + result)
     else:
