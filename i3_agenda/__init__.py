@@ -113,17 +113,19 @@ def main():
         elif button == '3':
             print("Opening location link...")
             subprocess.Popen(["xdg-open", closest.location])
-    
+
     event = datetime.datetime.fromtimestamp(closest.unix_time)
     today = datetime.datetime.today()
     tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
 
+    result = str(get_display(closest.summary))
+
     if (event.date() == today.date()):
-        print(f"{event:Today at %H:%M} " + get_display(closest.summary))
+        print(f"{event:Today at %H:%M} " + result)
     elif (event.date() == tomorrow.date()):
-        print(f"{event:Tomorrow at %H:%M} " + get_display(closest.summary))
+        print(f"{event:Tomorrow at %H:%M} " + result)
     else:
-        print(f"{event:{args.date_format} at %H:%M} " + get_display(closest.summary))
+        print(f"{event:{args.date_format} at %H:%M} " + result)
 
 def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today_only=False) -> List[Event]:
     now = datetime.datetime.utcnow()
@@ -163,7 +165,7 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             end_time = get_event_time(event['end'].get('dateTime', event['end'].get('date')))
             start_time = event['start'].get('dateTime', event['start'].get('date'))
             unix_time = get_event_time(start_time)
-            
+
             location = None
             if 'location' in event:
                 location = event['location']
@@ -239,7 +241,7 @@ def load_cache(cachettl: int) -> Optional[List[Event]]:
                           event['end_time'],
                           event['location'])
                 )
-        return events    
+        return events
     except Exception:
         # Invalid cache
         return None
