@@ -68,8 +68,8 @@ parser.add_argument('--hide-event-after',
                     help='minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends')
 parser.add_argument('--date-format',
                     type=str,
-                    default="%d/%m",
-                    help='the date format like %d/%m/%y. Default is %d/%m')
+                    default="%%d/%%m",
+                    help='the date format like %%d/%%m/%%y. Default is %%d/%%m')
 
 
 class Event():
