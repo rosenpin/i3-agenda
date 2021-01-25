@@ -66,6 +66,11 @@ parser.add_argument('--hide-event-after',
                     type=int,
                     default=-1,
                     help='minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends')
+parser.add_argument('--date-format',
+                    type=str,
+                    default="%d/%m",
+                    help='the date format like %d/%m/%y. Default is %d/%m')
+
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float, location: str):
@@ -108,9 +113,17 @@ def main():
         elif button == '3':
             print("Opening location link...")
             subprocess.Popen(["xdg-open", closest.location])
+    
+    event = datetime.datetime.fromtimestamp(closest.unix_time)
+    today = datetime.datetime.today()
+    tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
 
-    t = datetime.datetime.fromtimestamp(closest.unix_time)
-    print(f"{t:%H:%M} " + get_display(closest.summary))
+    if (event.date() == today.date()):
+        print(f"{event:Today at %H:%M} " + get_display(closest.summary))
+    elif (event.date() == tomorrow.date()):
+        print(f"{event:Tomorrow at %H:%M} " + get_display(closest.summary))
+    else:
+        print(f"{event:{args.date_format} at %H:%M} " + get_display(closest.summary))
 
 def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today_only=False) -> List[Event]:
     now = datetime.datetime.utcnow()
