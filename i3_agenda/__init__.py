@@ -170,7 +170,16 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             if 'location' in event:
                 location = event['location']
 
-            all.append(Event(event['summary'],
+            # Events from shared calendars with their visibility set to private
+            # will not have any summary. In Google Calendar they show up as
+            # "busy". Maybe we want to do the same here? Or maybe we want to
+            # skip this event altogether?
+            try:
+                summary = event['summary']
+            except KeyError:
+                summary = "busy"
+
+            all.append(Event(summary,
                              is_allday(start_time),
                              unix_time,
                              end_time,
