@@ -70,7 +70,11 @@ parser.add_argument('--date-format',
                     type=str,
                     default="%%d/%%m",
                     help='the date format like %%d/%%m/%%y. Default is %%d/%%m')
-
+parser.add_argument('--limchar',
+                    '-l',
+                    type=int,
+                    default=-1,
+                    help='the max characters that the displayed event can contain')
 
 class Event():
     def __init__(self, summary: str, is_allday: bool, unix_time: float, end_time: float, location: str):
@@ -119,6 +123,9 @@ def main():
     tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
 
     result = str(get_display(closest.summary))
+
+    if args.limchar!=-1 and len(result)>args.limchar:
+        result = ''.join([c for c in result][:args.limchar])+'...'
 
     if (event.date() == today.date()):
         print(f"{event:%H:%M} " + result)
