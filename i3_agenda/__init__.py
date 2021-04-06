@@ -124,8 +124,8 @@ def main():
 
     result = str(get_display(closest.summary))
 
-    if args.limchar!=-1 and len(result)>args.limchar:
-        result = ''.join([c for c in result][:args.limchar])+'...'
+    if args.limchar >= 0 and len(result) > args.limchar:
+        result = ''.join([c for c in result][:args.limchar]) + '...'
 
     if (event.date() == today.date()):
         print(f"{event:%H:%M} " + result)
