@@ -68,7 +68,7 @@ parser.add_argument('--hide-event-after',
                     help='minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends')
 parser.add_argument('--date-format',
                     type=str,
-                    default="%%d/%%m",
+                    default="%d/%m",
                     help='the date format like %%d/%%m/%%y. Default is %%d/%%m')
 parser.add_argument('--limchar',
                     '-l',
@@ -120,7 +120,8 @@ def main():
 
     event = datetime.datetime.fromtimestamp(closest.unix_time)
     today = datetime.datetime.today()
-    tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
+    tomorrow = today + datetime.timedelta(days=1)
+    urgent = today + datetime.timedelta(minutes=5)
 
     result = str(get_display(closest.summary))
 
@@ -129,6 +130,9 @@ def main():
 
     if (event.date() == today.date()):
         print(f"{event:%H:%M} " + result)
+        if event < urgent:
+            # special i3blocks exit code to set the block urgent
+            exit(33)
     elif (event.date() == tomorrow.date()):
         print(f"{event:Tomorrow at %H:%M} " + result)
     else:
