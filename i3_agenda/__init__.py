@@ -133,7 +133,6 @@ def main():
         if event < urgent:
             # special i3blocks exit code to set the block urgent
             exit(33)
-
     elif (event.date() == tomorrow.date()):
         print(f"{event:Tomorrow at %H:%M} " + result)
     else:
