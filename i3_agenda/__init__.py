@@ -120,7 +120,8 @@ def main():
 
     event = datetime.datetime.fromtimestamp(closest.unix_time)
     today = datetime.datetime.today()
-    tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
+    tomorrow = today + datetime.timedelta(days=1)
+    urgent = today + datetime.timedelta(minutes=5)
 
     result = str(get_display(closest.summary))
 
@@ -129,6 +130,10 @@ def main():
 
     if (event.date() == today.date()):
         print(f"{event:%H:%M} " + result)
+        if event < urgent:
+            # special i3blocks exit code to set the block urgent
+            exit(33)
+
     elif (event.date() == tomorrow.date()):
         print(f"{event:Tomorrow at %H:%M} " + result)
     else:
