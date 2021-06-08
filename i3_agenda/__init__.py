@@ -121,20 +121,23 @@ def main():
     event = datetime.datetime.fromtimestamp(closest.unix_time)
     today = datetime.datetime.today()
     tomorrow = today + datetime.timedelta(days=1)
+    next_week = today + datetime.timedelta(days=7)
     urgent = today + datetime.timedelta(minutes=5)
 
     result = str(get_display(closest.summary))
 
-    if args.limchar >= 0 and len(result) > args.limchar:
+    if 0 <= args.limchar < len(result):
         result = ''.join([c for c in result][:args.limchar]) + '...'
 
-    if (event.date() == today.date()):
+    if event.date() == today.date():
         print(f"{event:%H:%M} " + result)
         if event < urgent:
             # special i3blocks exit code to set the block urgent
             exit(33)
-    elif (event.date() == tomorrow.date()):
+    elif event.date() == tomorrow.date():
         print(f"{event:Tomorrow at %H:%M} " + result)
+    elif event.date() < next_week.date():
+        print(f"{event:%a at %H:%M} " + result)
     else:
         print(f"{event:{args.date_format} at %H:%M} " + result)
 
@@ -217,13 +220,14 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
         if event.is_allday:
             continue
 
+        now = time.time()
         # If the event already ended
-        if event.end_time < time.time():
+        if event.end_time < now:
             continue
 
-        if hide_event_after > -1:
         # If the event started more than hide_event_after ago
-            if event.unix_time + 60 * hide_event_after < time.time():
+        if hide_event_after > -1:
+            if event.unix_time + 60 * hide_event_after < now:
                 continue
 
         if closest is None or event.unix_time < closest.unix_time:
