@@ -226,9 +226,8 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
             continue
 
         # If the event started more than hide_event_after ago
-        if hide_event_after > -1:
-            if event.unix_time + 60 * hide_event_after < now:
-                continue
+        if hide_event_after > -1 and event.unix_time + 60 * hide_event_after < now:
+            continue
 
         if closest is None or event.unix_time < closest.unix_time:
             closest = event
