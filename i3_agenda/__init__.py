@@ -8,6 +8,7 @@ import json
 import os
 import os.path
 import pickle
+import re
 import subprocess
 import time
 from os.path import expanduser
@@ -23,6 +24,7 @@ TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"
 CACHE_PATH = f"{CONF_DIR}/i3agenda_cache.txt"
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 DEFAULT_CAL_WEBPAGE = 'https://calendar.google.com/calendar/r/day'
+URL_REGEX = '(((http|https)://)?[a-zA-Z0-9./?:@\\-_=#]+\\.([a-zA-Z]){2,6}([a-zA-Z0-9.&/?:@\\-_=#])*)'
 
 # i3blocks use this envvar to check the click
 button = os.getenv("BLOCK_BUTTON", "")
@@ -183,6 +185,9 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             location = None
             if 'location' in event:
                 location = event['location']
+            elif 'description' in event:
+                mathes = re.findall(URL_REGEX, event['description'])
+                location = mathes[0][0] if mathes else None
 
             all.append(Event(event['summary'],
                              is_allday(start_time),
