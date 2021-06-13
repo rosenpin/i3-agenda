@@ -8,6 +8,7 @@ import json
 import os
 import os.path
 import pickle
+import re
 import subprocess
 import time
 from os.path import expanduser
@@ -23,6 +24,7 @@ TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"
 CACHE_PATH = f"{CONF_DIR}/i3agenda_cache.txt"
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
+URL_REGEX = "(((http|https)://)?[a-zA-Z0-9./?:@\\-_=#]+\\.([a-zA-Z]){2,6}([a-zA-Z0-9.&/?:@\\-_=#])*)"
 
 # i3blocks use this envvar to check the click
 button = os.getenv("BLOCK_BUTTON", "")
@@ -147,12 +149,13 @@ def main():
     event = datetime.datetime.fromtimestamp(closest.unix_time)
     today = datetime.datetime.today()
     tomorrow = today + datetime.timedelta(days=1)
+    next_week = today + datetime.timedelta(days=7)
     urgent = today + datetime.timedelta(minutes=5)
 
     result = str(get_display(closest.summary))
 
-    if args.limchar >= 0 and len(result) > args.limchar:
-        result = "".join([c for c in result][: args.limchar]) + "..."
+    if 0 <= args.limchar < len(result):
+        result = "".join([c for c in result][:args.limchar]) + "..."
 
     if event.date() == today.date():
         print(f"{event:%H:%M} " + result)
@@ -161,6 +164,8 @@ def main():
             exit(33)
     elif event.date() == tomorrow.date():
         print(f"{event:Tomorrow at %H:%M} " + result)
+    elif event.date() < next_week.date():
+        print(f"{event:%a at %H:%M} " + result)
     else:
         print(f"{event:{args.date_format} at %H:%M} " + result)
 
@@ -226,8 +231,12 @@ def getEvents(
             unix_time = get_event_time(start_time)
 
             location = None
+            
             if "location" in event:
                 location = event["location"]
+            elif "description" in event:
+                matches = re.findall(URL_REGEX, event["description"])
+                location = matches[0][0] if matches else None
 
             all.append(
                 Event(
@@ -270,14 +279,14 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
         if event.is_allday:
             continue
 
+        now = time.time()
         # If the event already ended
-        if event.end_time < time.time():
+        if event.end_time < now:
             continue
 
-        if hide_event_after > -1:
-            # If the event started more than hide_event_after ago
-            if event.unix_time + 60 * hide_event_after < time.time():
-                continue
+        # If the event started more than hide_event_after ago
+        if hide_event_after > -1 and event.unix_time + 60 * hide_event_after < now:
+            continue
 
         if closest is None or event.unix_time < closest.unix_time:
             closest = event
