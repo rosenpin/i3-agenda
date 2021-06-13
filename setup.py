@@ -15,20 +15,18 @@ setuptools.setup(
     download_url="https://github.com/rosenpin/i3-agenda/archive/1.5.tar.gz",
     packages=setuptools.find_packages(),
     license="Unlicense",
-    classifiers=[
-        "Programming Language :: Python :: 3"
-    ],
+    classifiers=["Programming Language :: Python :: 3"],
     install_requires=[
         "python-bidi",
         "google-api-python-client",
         "google-auth-httplib2",
         "google-auth-oauthlib",
-        "aiohttp"
+        "aiohttp",
     ],
     entry_points={
         "console_scripts": [
             "i3-agenda = i3_agenda.__init__:main",
         ],
     },
-    python_requires='>=3.3',
+    python_requires=">=3.3",
 )
