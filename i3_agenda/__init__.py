@@ -186,8 +186,8 @@ def getEvents(service, allowed_calendars_ids: List[str], max_results: int, today
             if 'location' in event:
                 location = event['location']
             elif 'description' in event:
-                mathes = re.findall(URL_REGEX, event['description'])
-                location = mathes[0][0] if mathes else None
+                matches = re.findall(URL_REGEX, event['description'])
+                location = matches[0][0] if matches else None
 
             all.append(Event(event['summary'],
                              is_allday(start_time),
