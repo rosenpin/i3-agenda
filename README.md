@@ -68,7 +68,7 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
   --date-format DATEFORMAT
                         the date format like %d/%m/%y. Default is %d/%m
   --limchar LIMIT, -l LIMIT
-                        limits the size of the event summary string in LIMIT characters
+                        limits the size of the event summary string in LIMIT characters. If not specified it shows the entire summary.
 ```
 
 ### Filter displayed calendars
