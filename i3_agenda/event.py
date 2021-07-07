@@ -1,6 +1,6 @@
 
 import json
-import datetime
+import datetime as dt
 
 
 class Event:
@@ -19,23 +19,26 @@ class Event:
         self.location = location
 
     def get_datetime(self):
-        return datetime.datetime.fromtimestamp(self.unix_time)
+        return dt.datetime.fromtimestamp(self.unix_time)
 
     def is_today(self):
-        today = datetime.datetime.today()
+        today = dt.datetime.today()
         return self.get_datetime().date() == today.date()
 
     def is_tomorrow(self):
-        tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
+        tomorrow = dt.datetime.today() + dt.timedelta(days=1)
         return self.get_datetime().date() == tomorrow.date()
 
     def is_this_week(self):
-        next_week = datetime.datetime.today() + datetime.timedelta(days=7)
+        next_week = dt.datetime.today() + dt.timedelta(days=7)
         return self.get_datetime() < next_week.date()
 
     def is_urgent(self):
-        urgent = datetime.datetime.today() + datetime.timedelta(minutes=5)
-        return self.get_datetime() < urgent
+        now = dt.datetime.now()
+        urgent = now + dt.timedelta(minutes=5)
+        five_minutes_started = self.get_datetime() + dt.timedelta(minutes=5)
+        # is urgent if it begins in five minutes and if it hasn't passed 5 minutes it started
+        return self.get_datetime() < urgent and not now > five_minutes_started
 
 
 class EventEncoder(json.JSONEncoder):
