@@ -1,5 +1,6 @@
 
 import json
+import datetime
 
 
 class Event:
@@ -16,6 +17,25 @@ class Event:
         self.unix_time = unix_time
         self.end_time = end_time
         self.location = location
+
+    def get_datetime(self):
+        return datetime.datetime.fromtimestamp(self.unix_time)
+
+    def is_today(self):
+        today = datetime.datetime.today()
+        return self.get_datetime().date() == today.date()
+
+    def is_tomorrow(self):
+        tomorrow = datetime.datetime.today() + datetime.timedelta(days=1)
+        return self.get_datetime().date() == tomorrow.date()
+
+    def is_this_week(self):
+        next_week = datetime.datetime.today() + datetime.timedelta(days=7)
+        return self.get_datetime() < next_week.date()
+
+    def is_urgent(self):
+        urgent = datetime.datetime.today() + datetime.timedelta(minutes=5)
+        return self.get_datetime() < urgent
 
 
 class EventEncoder(json.JSONEncoder):
