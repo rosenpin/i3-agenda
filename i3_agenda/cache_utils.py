@@ -39,7 +39,6 @@ def get_events_from_cache(f: TextIO) -> List[Event]:
         events.append(
             Event(
                 event["summary"],
-                event["is_allday"],
                 event["unix_time"],
                 event["end_time"],
                 event["location"],

@@ -11,12 +11,10 @@ class Event:
     def __init__(
         self,
         summary: str,
-        is_allday: bool,
         unix_time: float,
         end_time: float,
         location: str,
     ):
-        self.is_allday = is_allday
         self.summary = summary
         self.unix_time = unix_time
         self.end_time = end_time
@@ -61,6 +59,9 @@ class Event:
         # is urgent if it begins in five minutes and if it hasn't passed 5 minutes it started
         return self.get_datetime() < urgent and not now > five_minutes_started
 
+    def is_allday(self) -> bool:
+        return self.get_datetime().hour == 0
+
 
 class EventEncoder(json.JSONEncoder):
     def default(self, o):  # pylint: disable=E0202
@@ -74,7 +75,7 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
     closest = None
     for event in events:
         # Don't show all day events
-        if event.is_allday:
+        if event.is_allday():
             continue
 
         now = time.time()
@@ -107,7 +108,3 @@ def get_event_time(full_time: str) -> float:
     return time.mktime(
         dt.datetime.strptime(full_time, event_time_format).astimezone().timetuple()
     )
-
-
-def is_allday(start_time: str) -> bool:
-    return "T" not in start_time
