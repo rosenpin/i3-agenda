@@ -2,14 +2,12 @@
 
 from __future__ import print_function
 
-import datetime
 import subprocess
 
 from typing import List
 
-from event import Event, EventEncoder
+from event import Event, EventEncoder, get_closest
 from config import parser, button
-from event_utils import get_closest
 from API import getEvents
 from cache_utils import load_cache, save_cache
 

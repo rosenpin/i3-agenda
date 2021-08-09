@@ -9,8 +9,7 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build, Resource
 
-from event import Event
-from event_utils import get_event_time, is_allday
+from event import Event, get_event_time, is_allday
 from config import CONF_DIR, URL_REGEX
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
