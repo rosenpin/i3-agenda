@@ -18,12 +18,18 @@ TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"
 
 
 def connect(credspath: str) -> Resource:
+    creds = get_credentials(credspath)
+
+    service = build("calendar", "v3", credentials=creds)
+    return service
+
+
+def get_credentials(credspath):
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if not os.path.exists(CONF_DIR):
-        os.mkdir(CONF_DIR)
+
     if os.path.exists(TMP_TOKEN):
         with open(TMP_TOKEN, "rb") as token:
             creds = pickle.load(token)
@@ -43,18 +49,10 @@ def connect(credspath: str) -> Resource:
         # Save the credentials for the next run
         with open(TMP_TOKEN, "wb") as token:
             pickle.dump(creds, token)
-
-    service = build("calendar", "v3", credentials=creds)
-    return service
+    return creds
 
 
-def getEvents(
-        credentials: str, allowed_calendars_ids: List[str], max_results: int, today_only=False
-) -> List[Event]:
-    service = connect(credentials)
-
-    now = datetime.datetime.utcnow()
-    now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
+def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> List:
     calendar_ids = []
     while True:
         calendar_list = service.calendarList().list().execute()
@@ -67,65 +65,89 @@ def getEvents(
         page_token = calendar_list.get("nextPageToken")
         if not page_token:
             break
+    return calendar_ids
 
+
+def event_from_json(event):
+    end_time = get_event_time(event["end"].get("dateTime", event["end"].get("date")))
+    start_time = event["start"].get("dateTime", event["start"].get("date"))
+    unix_time = get_event_time(start_time)
+
+    location = None
+
+    if "location" in event:
+        location = event["location"]
+    elif "description" in event:
+        matches = re.findall(URL_REGEX, event["description"])
+        location = matches[0][0] if matches else None
+
+    return Event(
+            event["summary"],
+            is_allday(start_time),
+            unix_time,
+            end_time,
+            location,
+        )
+
+
+def get_event_result_today_only(service, calendar_id, max_results):
+    now = datetime.datetime.utcnow()
+    now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
+    midnight_rfc3339 = (
+            now.replace(hour=23, minute=39, second=59).isoformat() + "Z"
+    )
+    return (service.events()
+            .list(
+                calendarId=calendar_id,
+                timeMin=now_rfc3339,
+                timeMax=midnight_rfc3339,
+                maxResults=max_results,
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute())
+
+
+def get_event_result(service, calendar_id, max_results):
+    now = datetime.datetime.utcnow()
+    now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
+    return (service.events()
+            .list(
+                calendarId=calendar_id,
+                timeMin=now_rfc3339,
+                maxResults=max_results,
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute())
+
+
+def get_all_events(calendar_ids, service, max_results, today_only):
     all_events = []
+
     for calendar_id in calendar_ids:
         if today_only:
-            midnight_rfc3339 = (
-                    now.replace(hour=23, minute=39, second=59).isoformat() + "Z"
-            )
-            events_result = (
-                service.events()
-                .list(
-                    calendarId=calendar_id,
-                    timeMin=now_rfc3339,
-                    timeMax=midnight_rfc3339,
-                    maxResults=max_results,
-                    singleEvents=True,
-                    orderBy="startTime",
-                )
-                .execute()
-            )
+            events_result = get_event_result_today_only(service, calendar_id, max_results)
         else:
-            events_result = (
-                service.events()
-                .list(
-                    calendarId=calendar_id,
-                    timeMin=now_rfc3339,
-                    maxResults=max_results,
-                    singleEvents=True,
-                    orderBy="startTime",
-                )
-                .execute()
-            )
+            events_result = get_event_result(service, calendar_id, max_results)
         events = events_result.get("items", [])
 
         if not events:
             continue
 
         for event in events:
-            end_time = get_event_time(
-                event["end"].get("dateTime", event["end"].get("date"))
-            )
-            start_time = event["start"].get("dateTime", event["start"].get("date"))
-            unix_time = get_event_time(start_time)
+            all_events.append(event_from_json(event))
 
-            location = None
+    return all_events
 
-            if "location" in event:
-                location = event["location"]
-            elif "description" in event:
-                matches = re.findall(URL_REGEX, event["description"])
-                location = matches[0][0] if matches else None
 
-            all_events.append(
-                Event(
-                    event["summary"],
-                    is_allday(start_time),
-                    unix_time,
-                    end_time,
-                    location,
-                )
-            )
+def getEvents(
+        credentials: str, allowed_calendars_ids: List[str], max_results: int, today_only=False
+) -> List[Event]:
+    service = connect(credentials)
+
+    calendar_ids = get_callendar_ids(allowed_calendars_ids, service)
+
+    all_events = get_all_events(calendar_ids, service, max_results, today_only)
 
     return all_events
