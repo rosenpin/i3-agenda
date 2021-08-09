@@ -1,6 +1,7 @@
 
 import json
 import datetime as dt
+from bidi.algorithm import get_display
 
 
 class Event:
@@ -20,6 +21,23 @@ class Event:
 
     def get_datetime(self):
         return dt.datetime.fromtimestamp(self.unix_time)
+
+    def get_string(self, limit_char: int, date_format: str) -> str:
+        event_datetime = self.get_datetime()
+
+        result = str(get_display(self.summary))
+
+        if 0 <= limit_char < len(result):
+            result = "".join([c for c in result][:limit_char]) + "..."
+
+        if self.is_today():
+            return f"{event_datetime:%H:%M} " + result
+        elif self.is_tomorrow():
+            return f"{event_datetime:Tomorrow at %H:%M} " + result
+        elif self.is_this_week():
+            return f"{event_datetime:%a at %H:%M} " + result
+        else:
+            return f"{event_datetime:{date_format} at %H:%M} " + result
 
     def is_today(self):
         today = dt.datetime.today()

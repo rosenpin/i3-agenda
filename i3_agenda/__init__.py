@@ -5,7 +5,6 @@ from __future__ import print_function
 import datetime
 import subprocess
 
-from bidi.algorithm import get_display
 from typing import List
 
 from event import Event, EventEncoder
@@ -37,24 +36,6 @@ def get_events(args) -> List[Event]:
     return events
 
 
-def get_event_string(closest: Event, args) -> str:
-    event_datetime = closest.get_datetime()
-
-    result = str(get_display(closest.summary))
-
-    if 0 <= args.limchar < len(result):
-        result = "".join([c for c in result][:args.limchar]) + "..."
-
-    if closest.is_today():
-        return f"{event_datetime:%H:%M} " + result
-    elif closest.is_tomorrow():
-        return f"{event_datetime:Tomorrow at %H:%M} " + result
-    elif closest.is_this_week():
-        return f"{event_datetime:%a at %H:%M} " + result
-    else:
-        return f"{event_datetime:{args.date_format} at %H:%M} " + result
-
-
 def main():
     args = parser.parse_args()
 
@@ -67,7 +48,7 @@ def main():
 
     button_action(button, closest)
 
-    print(get_event_string(closest, args))
+    print(closest.get_string(args.limchar, args.date_format))
 
     if closest.is_urgent():
         # special i3blocks exit code to set the block urgent
