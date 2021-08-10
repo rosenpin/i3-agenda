@@ -118,7 +118,7 @@ def get_all_events(calendar_ids, service, max_results, today_only):
     return all_events
 
 
-def getEvents(
+def get_events(
         credentials: str, allowed_calendars_ids: List[str], max_results: int, today_only=False
 ) -> List[Event]:
     service = connect(credentials)

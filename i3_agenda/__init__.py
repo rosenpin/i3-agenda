@@ -8,7 +8,7 @@ from typing import List
 
 from event import Event, EventEncoder, get_closest
 from config import parser, button
-from API import getEvents
+from API import get_events
 from cache_utils import load_cache, save_cache
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
@@ -24,12 +24,12 @@ def button_action(button_code: str, closest: Event):
             subprocess.Popen(["xdg-open", closest.location])
 
 
-def get_events(args) -> List[Event]:
+def load_events(args) -> List[Event]:
     events = None
     if not args.update:
         events = load_cache(args.cachettl)
     if events is None:
-        events = getEvents(args.credentials, args.ids, args.maxres, args.today)
+        events = get_events(args.credentials, args.ids, args.maxres, args.today)
         save_cache(events)
     return events
 
@@ -37,7 +37,7 @@ def get_events(args) -> List[Event]:
 def main():
     args = parser.parse_args()
 
-    events = get_events(args)
+    events = load_events(args)
 
     closest = get_closest(events, args.hide_event_after)
     if closest is None:
