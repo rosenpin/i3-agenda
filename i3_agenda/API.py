@@ -1,6 +1,6 @@
 
 import os
-import re
+
 from typing import List
 import datetime
 import pickle
@@ -9,8 +9,8 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build, Resource
 
-from event import Event, get_event_time
-from config import CONF_DIR, URL_REGEX
+from event import Event, from_json
+from config import CONF_DIR
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"
@@ -67,27 +67,6 @@ def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> Li
     return calendar_ids
 
 
-def event_from_json(event):
-    end_time = get_event_time(event["end"].get("dateTime", event["end"].get("date")))
-    start_time = event["start"].get("dateTime", event["start"].get("date"))
-    unix_time = get_event_time(start_time)
-
-    location = None
-
-    if "location" in event:
-        location = event["location"]
-    elif "description" in event:
-        matches = re.findall(URL_REGEX, event["description"])
-        location = matches[0][0] if matches else None
-
-    return Event(
-            event["summary"],
-            unix_time,
-            end_time,
-            location,
-        )
-
-
 def get_event_result_today_only(service, calendar_id, max_results):
     now = datetime.datetime.utcnow()
     now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
@@ -134,7 +113,7 @@ def get_all_events(calendar_ids, service, max_results, today_only):
             continue
 
         for event in events:
-            all_events.append(event_from_json(event))
+            all_events.append(from_json(event))
 
     return all_events
 
