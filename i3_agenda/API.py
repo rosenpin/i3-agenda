@@ -67,36 +67,31 @@ def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> Li
     return calendar_ids
 
 
-def get_event_result_today_only(service, calendar_id, max_results):
+def get_result(service, calendar_id, max_results, midnight_rfc3339=None):
     now = datetime.datetime.utcnow()
     now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
+    return service.events()\
+        .list(
+            calendarId=calendar_id,
+            timeMin=now_rfc3339,
+            timeMax=midnight_rfc3339,
+            maxResults=max_results,
+            singleEvents=True,
+            orderBy="startTime",
+        )\
+        .execute()
+
+
+def get_today_events(service, calendar_id, max_results):
+    now = datetime.datetime.utcnow()
     midnight_rfc3339 = (
             now.replace(hour=23, minute=39, second=59).isoformat() + "Z"
     )
-    return (service.events()
-            .list(
-                calendarId=calendar_id,
-                timeMin=now_rfc3339,
-                timeMax=midnight_rfc3339,
-                maxResults=max_results,
-                singleEvents=True,
-                orderBy="startTime",
-            )
-            .execute())
+    return get_result(service, calendar_id, max_results, midnight_rfc3339).get("items", [])
 
 
 def get_event_result(service, calendar_id, max_results):
-    now = datetime.datetime.utcnow()
-    now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
-    return (service.events()
-            .list(
-                calendarId=calendar_id,
-                timeMin=now_rfc3339,
-                maxResults=max_results,
-                singleEvents=True,
-                orderBy="startTime",
-            )
-            .execute())
+    return get_result(service, calendar_id, max_results).get("items", [])
 
 
 def get_all_events(calendar_ids, service, max_results, today_only):
@@ -104,10 +99,9 @@ def get_all_events(calendar_ids, service, max_results, today_only):
 
     for calendar_id in calendar_ids:
         if today_only:
-            events_result = get_event_result_today_only(service, calendar_id, max_results)
+            events = get_today_events(service, calendar_id, max_results)
         else:
-            events_result = get_event_result(service, calendar_id, max_results)
-        events = events_result.get("items", [])
+            events = get_event_result(service, calendar_id, max_results)
 
         if not events:
             continue
