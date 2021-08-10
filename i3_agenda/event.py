@@ -1,10 +1,12 @@
 
-from bidi.algorithm import get_display
-import datetime as dt
+import re
 import json
 import time
+import datetime as dt
+from bidi.algorithm import get_display
 
 from typing import Optional, List
+from config import URL_REGEX
 
 
 class Event:
@@ -107,4 +109,25 @@ def get_event_time(full_time: str) -> float:
 
     return time.mktime(
         dt.datetime.strptime(full_time, event_time_format).astimezone().timetuple()
+    )
+
+
+def from_json(event_json):
+    end_time = get_event_time(event_json["end"].get("dateTime", event_json["end"].get("date")))
+    start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
+    unix_time = get_event_time(start_time)
+
+    location = None
+
+    if "location" in event_json:
+        location = event_json["location"]
+    elif "description" in event_json:
+        matches = re.findall(URL_REGEX, event_json["description"])
+        location = matches[0][0] if matches else None
+
+    return Event(
+        event_json["summary"],
+        unix_time,
+        end_time,
+        location
     )
