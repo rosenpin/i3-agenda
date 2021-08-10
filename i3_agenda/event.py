@@ -13,17 +13,17 @@ class Event:
     def __init__(
         self,
         summary: str,
-        unix_time: float,
+        start_time: float,
         end_time: float,
         location: str,
     ):
         self.summary = summary
-        self.unix_time = unix_time
+        self.start_time = start_time
         self.end_time = end_time
         self.location = location
 
     def get_datetime(self):
-        return dt.datetime.fromtimestamp(self.unix_time)
+        return dt.datetime.fromtimestamp(self.start_time)
 
     def get_string(self, limit_char: int, date_format: str) -> str:
         event_datetime = self.get_datetime()
@@ -62,7 +62,8 @@ class Event:
         return self.get_datetime() < urgent and not now > five_minutes_started
 
     def is_allday(self) -> bool:
-        return self.get_datetime().hour == 0
+        end_minus_24hrs = dt.datetime.fromtimestamp(self.end_time) - dt.timedelta(hours=24)
+        return self.get_datetime() == end_minus_24hrs
 
 
 class EventEncoder(json.JSONEncoder):
@@ -86,10 +87,10 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
             continue
 
         # If the event started more than hide_event_after ago
-        if hide_event_after > -1 and event.unix_time + 60 * hide_event_after < now:
+        if hide_event_after > -1 and event.start_time + 60 * hide_event_after < now:
             continue
 
-        if closest is None or event.unix_time < closest.unix_time:
+        if closest is None or event.start_time < closest.start_time:
             closest = event
 
     return closest
@@ -115,7 +116,7 @@ def get_event_time(full_time: str) -> float:
 def from_json(event_json):
     end_time = get_event_time(event_json["end"].get("dateTime", event_json["end"].get("date")))
     start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
-    unix_time = get_event_time(start_time)
+    start_time = get_event_time(start_time)
 
     location = None
 
@@ -127,7 +128,7 @@ def from_json(event_json):
 
     return Event(
         event_json["summary"],
-        unix_time,
+        start_time,
         end_time,
         location
     )
