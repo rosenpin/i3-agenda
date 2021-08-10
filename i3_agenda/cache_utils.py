@@ -32,16 +32,19 @@ def save_cache(events: List[Event]):
         f.write(EventEncoder().encode(events))
 
 
-def get_events_from_cache(f: TextIO) -> List[Event]:
+def get_events_from_cache(f: TextIO):
     events = []
     raw = json.loads(f.read())
     for event in raw:
-        events.append(
-            Event(
-                event["summary"],
-                event["unix_time"],
-                event["end_time"],
-                event["location"],
+        try:
+            events.append(
+                Event(
+                    event["summary"],
+                    event["start_time"],
+                    event["end_time"],
+                    event["location"],
+                )
             )
-        )
+        except KeyError:
+            return None
     return events
