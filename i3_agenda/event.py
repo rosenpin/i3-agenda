@@ -96,7 +96,7 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
     return closest
 
 
-def get_event_time(full_time: str) -> float:
+def get_unix_time(full_time: str) -> float:
     if "T" in full_time:
         event_time_format = "%Y-%m-%dT%H:%M:%S%z"
     else:
@@ -113,10 +113,10 @@ def get_event_time(full_time: str) -> float:
     )
 
 
-def from_json(event_json):
-    end_time = get_event_time(event_json["end"].get("dateTime", event_json["end"].get("date")))
+def from_json(event_json) -> Event:
+    end_time = get_unix_time(event_json["end"].get("dateTime", event_json["end"].get("date")))
     start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
-    start_time = get_event_time(start_time)
+    start_time = get_unix_time(start_time)
 
     location = None
 
