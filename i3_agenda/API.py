@@ -67,14 +67,14 @@ def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> Li
     return calendar_ids
 
 
-def get_result(service, calendar_id, max_results, midnight_rfc3339=None):
+def get_result(service, calendar_id, max_results, time_max_rfc3339=None):
     now = datetime.datetime.utcnow()
     now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
     return service.events()\
         .list(
             calendarId=calendar_id,
             timeMin=now_rfc3339,
-            timeMax=midnight_rfc3339,
+            timeMax=time_max_rfc3339,
             maxResults=max_results,
             singleEvents=True,
             orderBy="startTime",
@@ -85,7 +85,7 @@ def get_result(service, calendar_id, max_results, midnight_rfc3339=None):
 def get_today_events(service, calendar_id, max_results):
     now = datetime.datetime.utcnow()
     midnight_rfc3339 = (
-            now.replace(hour=23, minute=39, second=59).isoformat() + "Z"
+            now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
     )
     return get_result(service, calendar_id, max_results, midnight_rfc3339).get("items", [])
 
