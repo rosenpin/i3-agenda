@@ -62,8 +62,8 @@ class Event:
         return self.get_datetime() < urgent and not now > five_minutes_started
 
     def is_allday(self) -> bool:
-        end_minus_24hrs = dt.datetime.fromtimestamp(self.end_time) - dt.timedelta(hours=24)
-        return self.get_datetime() == end_minus_24hrs
+        time_delta = self.end_time - self.start_time
+        return self.get_datetime().time() == dt.time(0) and time_delta % 24 == 0
 
 
 class EventEncoder(json.JSONEncoder):
