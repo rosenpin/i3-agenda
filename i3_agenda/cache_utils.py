@@ -46,5 +46,6 @@ def get_events_from_cache(f: TextIO):
                 )
             )
         except KeyError:
+            # At least one of the events in cache are invalid, must mean that the entire cache is invalid
             return None
     return events
