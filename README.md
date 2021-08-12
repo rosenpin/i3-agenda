@@ -67,6 +67,8 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
                         minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends
   --date-format DATEFORMAT
                         the date format like %d/%m/%y. Default is %d/%m
+  --limchar LIMIT, -l LIMIT
+                        limits the size of the event summary string in LIMIT characters. If not specified it shows the entire summary.
 ```
 
 ### Filter displayed calendars

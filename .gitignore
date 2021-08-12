@@ -7,3 +7,4 @@ i3_agenda/__pycache__
 .idea/
 .vim/coc-settings.json
 .eggs/
+.venv
