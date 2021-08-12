@@ -63,6 +63,8 @@ class Event:
 
     def is_allday(self) -> bool:
         time_delta = self.end_time - self.start_time
+        # event is considered all day if its start time and end time are both 00:00:00 
+        # and the time difference between start and finish is divisible by 24
         return self.get_datetime().time() == dt.time(0) and time_delta % 24 == 0
 
 
