@@ -1,4 +1,3 @@
-
 from config import CONF_DIR
 from typing import Optional, List, TextIO
 

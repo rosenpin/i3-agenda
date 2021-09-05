@@ -1,4 +1,3 @@
-
 import os
 
 from typing import List
@@ -36,8 +35,8 @@ def get_credentials(credspath):
     if not creds or not creds.valid:
         if not os.path.exists(credspath):
             print(
-                '''You need to download your credentials json file from the 
-                   Google API Console and pass its path to this script'''
+                """You need to download your credentials json file from the 
+                   Google API Console and pass its path to this script"""
             )
             exit(1)
         if creds and creds.expired and creds.refresh_token:
@@ -57,8 +56,8 @@ def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> Li
         calendar_list = service.calendarList().list().execute()
         for calendar_list_entry in calendar_list["items"]:
             if (
-                    not allowed_calendars_ids
-                    or calendar_list_entry["id"] in allowed_calendars_ids
+                not allowed_calendars_ids
+                or calendar_list_entry["id"] in allowed_calendars_ids
             ):
                 calendar_ids.append(calendar_list_entry["id"])
         page_token = calendar_list.get("nextPageToken")
@@ -70,7 +69,8 @@ def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> Li
 def get_result(service, calendar_id, max_results, time_max_rfc3339=None):
     now = datetime.datetime.utcnow()
     now_rfc3339 = now.isoformat() + "Z"  # 'Z' indicates UTC time
-    return service.events()\
+    return (
+        service.events()
         .list(
             calendarId=calendar_id,
             timeMin=now_rfc3339,
@@ -78,16 +78,17 @@ def get_result(service, calendar_id, max_results, time_max_rfc3339=None):
             maxResults=max_results,
             singleEvents=True,
             orderBy="startTime",
-        )\
+        )
         .execute()
+    )
 
 
 def get_today_events(service, calendar_id, max_results):
     now = datetime.datetime.utcnow()
-    midnight_rfc3339 = (
-            now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
+    midnight_rfc3339 = now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
+    return get_result(service, calendar_id, max_results, midnight_rfc3339).get(
+        "items", []
     )
-    return get_result(service, calendar_id, max_results, midnight_rfc3339).get("items", [])
 
 
 def get_event_result(service, calendar_id, max_results):
@@ -113,7 +114,10 @@ def get_all_events(calendar_ids, service, max_results, today_only):
 
 
 def get_events(
-        credentials: str, allowed_calendars_ids: List[str], max_results: int, today_only=False
+    credentials: str,
+    allowed_calendars_ids: List[str],
+    max_results: int,
+    today_only=False,
 ) -> List[Event]:
     service = connect(credentials)
 
