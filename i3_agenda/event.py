@@ -52,7 +52,7 @@ class Event:
 
     def is_this_week(self):
         next_week = dt.datetime.today() + dt.timedelta(days=7)
-        return self.get_datetime() < next_week.date()
+        return self.get_datetime().date() < next_week.date()
 
     def is_urgent(self):
         now = dt.datetime.now()
