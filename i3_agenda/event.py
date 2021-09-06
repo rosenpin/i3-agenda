@@ -1,4 +1,3 @@
-
 import re
 import json
 import time
@@ -63,7 +62,7 @@ class Event:
 
     def is_allday(self) -> bool:
         time_delta = self.end_time - self.start_time
-        # event is considered all day if its start time and end time are both 00:00:00 
+        # event is considered all day if its start time and end time are both 00:00:00
         # and the time difference between start and finish is divisible by 24
         return self.get_datetime().time() == dt.time(0) and time_delta % 24 == 0
 
@@ -116,7 +115,9 @@ def get_unix_time(full_time: str) -> float:
 
 
 def from_json(event_json) -> Event:
-    end_time = get_unix_time(event_json["end"].get("dateTime", event_json["end"].get("date")))
+    end_time = get_unix_time(
+        event_json["end"].get("dateTime", event_json["end"].get("date"))
+    )
     start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
     start_time = get_unix_time(start_time)
 
@@ -128,9 +129,4 @@ def from_json(event_json) -> Event:
         matches = re.findall(URL_REGEX, event_json["description"])
         location = matches[0][0] if matches else None
 
-    return Event(
-        event_json["summary"],
-        start_time,
-        end_time,
-        location
-    )
+    return Event(event_json["summary"], start_time, end_time, location)
