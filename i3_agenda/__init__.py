@@ -38,6 +38,8 @@ def main():
     args = parser.parse_args()
 
     events = load_events(args)
+    if args.skip > 0:
+        events = events[args.skip :]
 
     closest = get_closest(events, args.hide_event_after)
     if closest is None:
