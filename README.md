@@ -121,15 +121,15 @@ Edit the polybar configuration creating two modules:
 type = custom/ipc
 
 hook-0 = i3-agenda -c ~/.google_credentials.json --skip $(cat ~/.config/i3-agenda/i3-agenda-skip.tmp || echo 0)
-hook-1 = ~/.config/polybar/scripts/i3agenda-onscroll.sh down && i3-agenda -c ~/.google_credentials.json --update --skip $(cat ~/.config/i3-agenda/i3-agenda-skip.tmp || echo 0)
-hook-2 = ~/.config/polybar/scripts/i3agenda-onscroll.sh up && i3-agenda -c ~/.google_credentials.json --update --skip $(cat ~/.config/i3-agenda/i3-agenda-skip.tmp || echo 0)
+hook-1 = ~/.config/polybar/scripts/i3agenda-onscroll.sh down && i3-agenda -c ~/.google_credentials.json --skip $(cat ~/.config/i3-agenda/i3-agenda-skip.tmp || echo 0)
+hook-2 = ~/.config/polybar/scripts/i3agenda-onscroll.sh up && i3-agenda -c ~/.google_credentials.json --skip $(cat ~/.config/i3-agenda/i3-agenda-skip.tmp || echo 0)
 
 format = %{F#61afef}%{F-} <output>
 
 ; left click to launch Google Calendar
 click-left = firefox https://calendar.google.com/calendar/u/0/r
 ; right click force update the cache, if for example you just added a new event
-click-right = rm ~/.config/i3-agenda/i3-agenda-skip.tmp; python3 ~/.config/i3-agenda/i3-agenda-src/i3_agenda/__init__.py -cd ~/.config/i3-agenda/ -c ~/.config/i3-agenda/client_secret.json --update && notify-send "i3-agenda" "Sync completed"
+click-right = rm ~/.config/i3-agenda/i3-agenda-skip.tmp; i3-agenda -c ~/.config/i3-agenda/client_secret.json --update && notify-send "i3-agenda" "Sync completed"
 
 ; show the previous event
 scroll-down = polybar-msg hook agenda-ipc 2
