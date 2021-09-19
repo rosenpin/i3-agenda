@@ -35,8 +35,7 @@ def get_credentials(credspath):
     if not creds or not creds.valid:
         if not os.path.exists(credspath):
             print(
-                """You need to download your credentials json file from the 
-                   Google API Console and pass its path to this script"""
+                """You need to download your credentials json file from the Google API Console and pass its path to this script"""
             )
             exit(1)
         if creds and creds.expired and creds.refresh_token:
