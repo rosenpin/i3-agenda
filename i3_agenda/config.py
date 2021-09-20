@@ -85,3 +85,10 @@ parser.add_argument(
     default=-1,
     help="the max characters that the displayed event can contain",
 )
+parser.add_argument(
+    "--skip",
+    "-s",
+    type=int,
+    default=0,
+    help="the number of events to skip from the most recent",
+)
