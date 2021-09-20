@@ -3,13 +3,11 @@
 from __future__ import print_function
 
 import subprocess
+import config
 
 from typing import List
 
 from event import Event, EventEncoder, get_closest
-from config import parser, button
-from API import get_events
-from cache_utils import load_cache, save_cache
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
 
@@ -25,6 +23,9 @@ def button_action(button_code: str, closest: Event):
 
 
 def load_events(args) -> List[Event]:
+    from API import get_events
+    from cache_utils import load_cache, save_cache
+
     events = None
     if not args.update:
         events = load_cache(args.cachettl)
@@ -35,7 +36,8 @@ def load_events(args) -> List[Event]:
 
 
 def main():
-    args = parser.parse_args()
+    args = config.parser.parse_args()
+    config.CONF_DIR = args.conf
 
     events = load_events(args)
     if args.skip > 0:
@@ -46,7 +48,7 @@ def main():
         print(args.no_event_text)
         return
 
-    button_action(button, closest)
+    button_action(config.button, closest)
 
     print(closest.get_string(args.limchar, args.date_format))
 

@@ -54,17 +54,22 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
   -h, --help            show this help message and exit
   --credentials CREDENTIALS, -c CREDENTIALS
                         path to your credentials.json file
+  --conf CONF, -cd CONF
+                        path to the i3agenda configuration and cache folder
   --cachettl CACHETTL, -ttl CACHETTL
                         time for cache to be kept in minutes
-  --update, -u          when using this flag it will not load previous results from cache, it will however save new results to cache. You can use this flag to refresh all the cache forcefully
+  --update, -u          when using this flag it will not load previous results from cache, it will however save new results to cache.
+                        You can use this flag to refresh all the cache forcefully
   --ids IDS [IDS ...], -i IDS [IDS ...]
                         list of calendar ids to fetch, space separated. If  none is specified all calendars will be fetched
   --maxres MAXRES, -r MAXRES
-                        max number of events to query Google's API for each of your calendars. Increase this number if you have lot of events in your google calendar
+                        max number of events to query Google's API for each of your calendars.
+                        Increase this number if you have lot of events in your google calendar
   --today, -d           print only today events
   --no-event-text TEXT  text to display when there are no events
   --hide-event-after HIDE_EVENT_AFTER
-                        minutes to show events after they start before showing the next event. If not specified, the current event will be shown until it ends
+                        minutes to show events after they start before showing the next event.
+                        If not specified, the current event will be shown until it ends
   --date-format DATE_FORMAT
                         the date format like %d/%m/%y. Default is %d/%m
   --limchar LIMCHAR, -l LIMCHAR

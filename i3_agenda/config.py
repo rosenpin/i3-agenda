@@ -19,6 +19,13 @@ parser.add_argument(
     help="path to your credentials.json file",
 )
 parser.add_argument(
+    "--conf",
+    "-cd",
+    type=str,
+    default=CONF_DIR,
+    help="path to the i3agenda configuration and cache folder",
+)
+parser.add_argument(
     "--cachettl",
     "-ttl",
     type=int,
