@@ -91,6 +91,9 @@ It uses a caching mechanism so you won't have to contact Google servers every mi
 Example: `i3-agenda --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour).\
 This means that if you create a new event, it might take an hour for the script to recognize it.
 
+### Multi account support
+Multi account support is not officialy supported, but you can use the workaround from this issue: https://github.com/rosenpin/i3-agenda/issues/35#issuecomment-923976482
+
 ## Examples
 Example polybar configuration:
 ``` ini
