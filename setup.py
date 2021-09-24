@@ -23,6 +23,12 @@ setuptools.setup(
         "google-auth-oauthlib",
         "aiohttp",
     ],
+    scripts=[
+        "i3_agenda/config.py",
+        "i3_agenda/event.py",
+        "i3_agenda/API.py",
+        "i3_agenda/cache_utils.py",
+    ],
     entry_points={
         "console_scripts": [
             "i3-agenda = i3_agenda.__init__:main",
