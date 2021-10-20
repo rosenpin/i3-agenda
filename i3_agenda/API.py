@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from typing import List
 import datetime
@@ -28,12 +28,13 @@ def get_credentials(credspath):
     # created automatically when the authorization flow completes for the first
     # time.
 
-    if os.path.exists(TMP_TOKEN):
+    Path(CONF_DIR).mkdir(parents=True, exist_ok=True)
+    if Path(TMP_TOKEN).is_file():
         with open(TMP_TOKEN, "rb") as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
-        if not os.path.exists(credspath):
+        if not Path(credspath).is_file():
             print(
                 """You need to download your credentials json file from the Google API Console and pass its path to this script"""
             )
