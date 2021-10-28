@@ -24,15 +24,28 @@ class Event:
     def get_datetime(self):
         return dt.datetime.fromtimestamp(self.start_time)
 
+    def get_end_datetime(self):
+        return dt.datetime.fromtimestamp(self.end_time)
+
     def get_string(self, limit_char: int, date_format: str) -> str:
         event_datetime = self.get_datetime()
 
-        result = str(get_display(self.summary))
-
+        result = self.summary
+        shortend = False
         if 0 <= limit_char < len(result):
-            result = "".join([c for c in result][:limit_char]) + "..."
+            shortend = True
+            result = "".join([c for c in result][:limit_char])
 
-        if self.is_today():
+        result = str(get_display(result))
+        if shortend:
+            result += "..."
+
+        if self.is_ongoing():
+            time_left = self.get_end_datetime() - dt.datetime.now()
+            hours_left = str(time_left).split(".", 2)[0].split(":", 3)[0]
+            minutes_left = str(time_left).split(".", 2)[0].split(":", 3)[1]
+            return result + " (" + hours_left + "h " + minutes_left + "m left)"
+        elif self.is_today():
             return f"{event_datetime:%H:%M} " + result
         elif self.is_tomorrow():
             return f"{event_datetime:Tomorrow at %H:%M} " + result
@@ -40,6 +53,11 @@ class Event:
             return f"{event_datetime:%a at %H:%M} " + result
         else:
             return f"{event_datetime:{date_format} at %H:%M} " + result
+
+    def is_ongoing(self):
+        now = dt.datetime.now()
+        ongoing = now > self.get_datetime() and not now > self.get_end_datetime()
+        return ongoing
 
     def is_today(self):
         today = dt.datetime.today()
