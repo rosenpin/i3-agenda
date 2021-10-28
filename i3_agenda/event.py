@@ -24,22 +24,39 @@ class Event:
     def get_datetime(self):
         return dt.datetime.fromtimestamp(self.start_time)
 
+    def get_end_datetime(self):
+        return dt.datetime.fromtimestamp(self.end_time)
+
     def get_string(self, limit_char: int, date_format: str) -> str:
         event_datetime = self.get_datetime()
 
-        result = str(get_display(self.summary))
-
+        result = self.summary
+        trimmed = False
         if 0 <= limit_char < len(result):
-            result = "".join([c for c in result][:limit_char]) + "..."
+            trimmed = True
+            result = "".join([c for c in result][:limit_char])
 
-        if self.is_today():
-            return f"{event_datetime:%H:%M} " + result
+        result = str(get_display(result))
+        # this is done to preserve RTL while adding the "..." since the get_display is applied after adding the "..."
+        if trimmed:
+            result += "..."
+
+        if self.is_ongoing():
+            time_left = self.get_end_datetime() - dt.datetime.now()
+            return f"{result} ({human_delta(time_left)} left)"
+        elif self.is_today():
+            return f"{event_datetime:%H:%M} {result}"
         elif self.is_tomorrow():
-            return f"{event_datetime:Tomorrow at %H:%M} " + result
+            return f"{event_datetime:Tomorrow at %H:%M} {result}"
         elif self.is_this_week():
-            return f"{event_datetime:%a at %H:%M} " + result
+            return f"{event_datetime:%a at %H:%M} {result}"
         else:
-            return f"{event_datetime:{date_format} at %H:%M} " + result
+            return f"{event_datetime:{date_format} at %H:%M} {result}"
+
+    def is_ongoing(self):
+        now = dt.datetime.now()
+        ongoing = now > self.get_datetime() and not now > self.get_end_datetime()
+        return ongoing
 
     def is_today(self):
         today = dt.datetime.today()
@@ -73,6 +90,23 @@ class EventEncoder(json.JSONEncoder):
             return o.__dict__
         else:
             return json.JSONEncoder.default(self, o)
+
+
+def human_delta(tdelta):
+    d = dict(days=tdelta.days)
+    d["hrs"], rem = divmod(tdelta.seconds, 3600)
+    d["min"], d["sec"] = divmod(rem, 60)
+
+    if d["min"] == 0:
+        fmt = "0m"
+    elif d["hrs"] == 0:
+        fmt = "{min}m"
+    elif d["days"] == 0:
+        fmt = "{hrs}h {min}m"
+    else:
+        fmt = "{days} day(s) {hrs}h {min}m"
+
+    return fmt.format(**d)
 
 
 def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
