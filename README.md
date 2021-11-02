@@ -86,6 +86,10 @@ Leaving the list empty will fetch all calendars (default behavior).
 ### Known issues
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
 
+### RTL support
+If you use RTL or some of your events contain RTL languages, you will need to pipe [pybidi](https://pypi.org/project/python-bidi/) with the script. Example:  
+`i3-agenda -c ~/.google_credentials.json -ttl 60 | pybidi`
+
 ### Caching
 It uses a caching mechanism so you won't have to contact Google servers every minute, to set the cache TTL use the -ttl flag.\
 Example: `i3-agenda --ttl 60` to set the TTL to 60 (meaning it will contact Google again every hour).\
@@ -95,7 +99,7 @@ This means that if you create a new event, it might take an hour for the script 
 Multi account support is not officialy supported, but you can use the workaround from this issue: https://github.com/rosenpin/i3-agenda/issues/35#issuecomment-923976482
 
 ## Examples
-Example polybar configuration:
+### Example [polybar](https://github.com/polybar/polybar) configuration:
 ``` ini
 modules-center = agenda
 ....
@@ -110,7 +114,29 @@ click-right = notify-send "syncing..." && i3-agenda -c ~/.google_credentials.jso
 interval = 60
 ```
 
-Example i3block configuration:
+### Example [SwiftBar](https://github.com/swiftbar/SwiftBar) configuration
+This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events
+``` bash
+#!/bin/bash
+# <swiftbar.hideAbout>true</swiftbar.hideAbout>
+
+i3-agenda -c ~/.google_credentials.json -ttl 60 --limchar 30
+
+echo "---"
+href="href='https://calendar.google.com/calendar/u/0/r/'"
+
+i=2
+while :; do 
+    event=$(i3-agenda -c ~/.google_credentials.json -ttl 60 --limchar 30 --skip $i --today)
+    ((i++))
+    if [[ "$event" == "No events" ]];then
+        exit 0
+    fi
+    echo "$event | $href"
+done
+```
+
+### Example i3block configuration:
 ```ini
 [i3-agenda]
 command=i3-agenda -c ~/.google_credentials.json -ttl 60
