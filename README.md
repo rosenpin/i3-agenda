@@ -7,6 +7,7 @@ It's a script that communicates with Google's calendar API, it will go through y
 You can take this output and show it on your i3-bar or polybar
 
 ![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/screenshot.png)
+![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/mac_screenshot.png)
 
 ## How does it work
 It will read your next 10 events from each of your calendars, then go through them all and figure out which one is closest.\
@@ -100,6 +101,7 @@ Multi account support is not officialy supported, but you can use the workaround
 
 ## Examples
 ### Example [polybar](https://github.com/polybar/polybar) configuration:
+![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/screenshot.png)
 ``` ini
 modules-center = agenda
 ....
@@ -115,6 +117,7 @@ interval = 60
 ```
 
 ### Example [SwiftBar](https://github.com/swiftbar/SwiftBar) configuration
+![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/mac_screenshot.png)
 This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events  
 You can call the file `agenda.2m.sh` to make it refresh every 2 minutes
 ``` bash
