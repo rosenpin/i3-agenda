@@ -6,8 +6,9 @@ import subprocess
 import config
 
 from typing import List
+import datetime
 
-from event import Event, EventEncoder, get_closest
+from event import Event, EventEncoder, get_closest, sort_events
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
 
@@ -22,6 +23,16 @@ def button_action(button_code: str, closest: Event):
             subprocess.Popen(["xdg-open", closest.location])
 
 
+def filter_only_todays_events(events: List[Event]):
+    now = datetime.datetime.utcnow()
+    midnight_rfc3339 = now.replace(hour=23, minute=59, second=59)
+    return filter(
+        lambda event: datetime.datetime.fromtimestamp(event.start_time)
+        < midnight_rfc3339,
+        events,
+    )
+
+
 def load_events(args) -> List[Event]:
     from API import get_events
     from cache_utils import load_cache, save_cache
@@ -29,6 +40,10 @@ def load_events(args) -> List[Event]:
     events = None
     if not args.update:
         events = load_cache(args.cachettl)
+        if args.today:
+            if events:
+                events = filter_only_todays_events(events)
+
     if events is None:
         events = get_events(args.credentials, args.ids, args.maxres, args.today)
         save_cache(events)
@@ -41,6 +56,7 @@ def main():
 
     events = load_events(args)
     if args.skip > 0:
+        events = sort_events(events)
         events = events[args.skip :]
 
     closest = get_closest(events, args.hide_event_after)
