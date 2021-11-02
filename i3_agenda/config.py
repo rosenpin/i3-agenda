@@ -92,3 +92,9 @@ parser.add_argument(
     default=0,
     help="the number of events to skip from the most recent",
 )
+parser.add_argument(
+    "--ongoing-time-left",
+    "-o",
+    action="store_true",
+    help="print time left instead of the end time for ongoing events (22m left) instead of (ends 12:00)",
+)

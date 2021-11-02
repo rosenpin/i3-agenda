@@ -66,7 +66,7 @@ def main():
 
     button_action(config.button, closest)
 
-    print(closest.get_string(args.limchar, args.date_format))
+    print(closest.get_string(args.limchar, args.date_format, args.ongoing_time_left))
 
     if closest.is_urgent():
         # special i3blocks exit code to set the block urgent
