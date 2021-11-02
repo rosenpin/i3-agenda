@@ -115,7 +115,8 @@ interval = 60
 ```
 
 ### Example [SwiftBar](https://github.com/swiftbar/SwiftBar) configuration
-This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events
+This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events  
+You can call the file `agenda.2m.sh` to make it refresh every 2 minutes
 ``` bash
 #!/bin/bash
 # <swiftbar.hideAbout>true</swiftbar.hideAbout>
