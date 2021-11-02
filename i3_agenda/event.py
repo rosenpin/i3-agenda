@@ -109,6 +109,10 @@ def human_delta(tdelta):
     return fmt.format(**d)
 
 
+def sort_events(events: List[Event]) -> List[Event]:
+    return sorted(events, key=lambda e: e.start_time, reverse=False)
+
+
 def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
     closest = None
     for event in events:
