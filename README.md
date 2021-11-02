@@ -126,7 +126,7 @@ i3-agenda -c ~/.google_credentials.json -ttl 60 --limchar 30
 echo "---"
 href="href='https://calendar.google.com/calendar/u/0/r/'"
 
-i=2
+i=1
 while :; do 
     event=$(i3-agenda -c ~/.google_credentials.json -ttl 60 --limchar 30 --skip $i --today)
     ((i++))
