@@ -113,8 +113,10 @@ def sort_events(events: List[Event]) -> List[Event]:
     return sorted(events, key=lambda e: e.start_time, reverse=False)
 
 
-def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
-    closest = None
+def get_future_events(events: List[Event], hide_event_after: int) -> List[Event]:
+    future_events = []
+    now = time.time()
+
     for event in events:
         # Don't show all day events
         if event.is_allday():
@@ -129,6 +131,14 @@ def get_closest(events: List[Event], hide_event_after: int) -> Optional[Event]:
         if hide_event_after > -1 and event.start_time + 60 * hide_event_after < now:
             continue
 
+        future_events.append(event)
+
+    return future_events
+
+
+def get_closest(events: List[Event]) -> Optional[Event]:
+    closest = None
+    for event in events:
         if closest is None or event.start_time < closest.start_time:
             closest = event
 
