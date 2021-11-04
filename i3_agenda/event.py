@@ -48,7 +48,7 @@ class Event:
                 time_left = self.get_end_datetime() - dt.datetime.now()
                 return f"{result} ({human_delta(time_left)} left)"
             else:
-                return f"{result} (ends {self.end_time:%H:%M})"
+                return f"{result} (ends {self.get_end_datetime():%H:%M})"
         elif self.is_today():
             return f"{event_datetime:%H:%M} {result}"
         elif self.is_tomorrow():
