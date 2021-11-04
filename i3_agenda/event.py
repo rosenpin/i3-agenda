@@ -27,7 +27,9 @@ class Event:
     def get_end_datetime(self):
         return dt.datetime.fromtimestamp(self.end_time)
 
-    def get_string(self, limit_char: int, date_format: str) -> str:
+    def get_string(
+        self, limit_char: int, date_format: str, ongoing_time_left: bool = False
+    ) -> str:
         event_datetime = self.get_datetime()
 
         result = self.summary
@@ -42,8 +44,11 @@ class Event:
             result += "..."
 
         if self.is_ongoing():
-            time_left = self.get_end_datetime() - dt.datetime.now()
-            return f"{result} ({human_delta(time_left)} left)"
+            if ongoing_time_left:
+                time_left = self.get_end_datetime() - dt.datetime.now()
+                return f"{result} ({human_delta(time_left)} left)"
+            else:
+                return f"{result} (ends {self.end_time:%H:%M})"
         elif self.is_today():
             return f"{event_datetime:%H:%M} {result}"
         elif self.is_tomorrow():
