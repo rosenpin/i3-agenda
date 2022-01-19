@@ -72,6 +72,8 @@ Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2
   --hide-event-after HIDE_EVENT_AFTER
                         minutes to show events after they start before showing the next event.
                         If not specified, the current event will be shown until it ends
+  --show-event-before SHOW_EVENT_BEFORE
+                        minutes to show events before they start. If not specified, the next event will be shown regardless of when it starts
   --date-format DATE_FORMAT
                         the date format like %d/%m/%y. Default is %d/%m
   --limchar LIMCHAR, -l LIMCHAR
