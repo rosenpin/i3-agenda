@@ -24,7 +24,7 @@ def button_action(button_code: str, closest: Event):
 
 
 def filter_only_todays_events(events: List[Event]) -> Optional[List[Event]]:
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
     midnight_rfc3339 = now.replace(hour=23, minute=59, second=59)
     return list(
         filter(
