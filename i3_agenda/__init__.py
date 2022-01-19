@@ -58,7 +58,7 @@ def main():
 
     events = load_events(args)
 
-    events = get_future_events(events, args.hide_event_after)
+    events = get_future_events(events, args.hide_event_after, args.show_event_before)
 
     if args.skip > 0:
         events = sort_events(events)

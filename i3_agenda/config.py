@@ -73,6 +73,13 @@ parser.add_argument(
             will be shown until it ends""",
 )
 parser.add_argument(
+    "--show-event-before",
+    type=int,
+    default=-1,
+    help="""minutes to show events before they start. If not specified, the next event
+            will be shown regardless of when it starts""",
+)
+parser.add_argument(
     "--date-format",
     type=str,
     default="%d/%m",

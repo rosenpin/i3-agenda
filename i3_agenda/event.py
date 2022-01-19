@@ -118,7 +118,7 @@ def sort_events(events: List[Event]) -> List[Event]:
     return sorted(events, key=lambda e: e.start_time, reverse=False)
 
 
-def get_future_events(events: List[Event], hide_event_after: int) -> List[Event]:
+def get_future_events(events: List[Event], hide_event_after: int, show_event_before: int) -> List[Event]:
     future_events = []
     now = time.time()
 
@@ -130,6 +130,10 @@ def get_future_events(events: List[Event], hide_event_after: int) -> List[Event]
         now = time.time()
         # If the event already ended
         if event.end_time < now:
+            continue
+
+        # Event won't start for more than show_event_before
+        if show_event_before > -1 and now + 60 * show_event_before < event.start_time:
             continue
 
         # If the event started more than hide_event_after ago
