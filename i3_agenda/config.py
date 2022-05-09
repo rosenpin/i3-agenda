@@ -105,3 +105,9 @@ parser.add_argument(
     action="store_true",
     help="print time left instead of the end time for ongoing events (22m left) instead of (ends 12:00)",
 )
+parser.add_argument(
+    "--next-event-time-left",
+    "-n",
+    action="store_true",
+    help="print the time remaining before the next event starts (event_name in 22m) instead of (12:00 event_name)",
+)
