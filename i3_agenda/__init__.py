@@ -46,7 +46,7 @@ def load_events(args) -> List[Event]:
             if events:
                 events = filter_only_todays_events(events)
 
-    if events is None:
+    if events is None or args.update:
         events = get_events(args.credentials, args.ids, args.maxres, args.today)
         save_cache(events)
     return events
@@ -71,7 +71,14 @@ def main():
 
     button_action(config.button, closest)
 
-    print(closest.get_string(args.limchar, args.date_format, args.ongoing_time_left, args.next_event_time_left))
+    print(
+        closest.get_string(
+            args.limchar,
+            args.date_format,
+            args.ongoing_time_left,
+            args.next_event_time_left,
+        )
+    )
 
     if closest.is_urgent():
         # special i3blocks exit code to set the block urgent
