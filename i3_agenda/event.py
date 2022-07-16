@@ -193,5 +193,4 @@ def from_json(event_json) -> Event:
     elif "description" in event_json:
         matches = re.findall(URL_REGEX, event_json["description"])
         location = matches[0][0] if matches else None
-
-    return Event(event_json["summary"], start_time, end_time, location)
+    return Event(event_json.get("summary", "(No title)"), start_time, end_time, location)
