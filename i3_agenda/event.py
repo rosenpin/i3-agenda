@@ -3,12 +3,16 @@ import json
 import time
 import datetime as dt
 from typing_extensions import LiteralString
-from typing import Union
+from typing import Union, Final
 from bidi.algorithm import get_display
 
 from typing import Optional, List
-from config import URL_REGEX
+from config import URL_REGEX, MIN_DELAY, MIN_CHAR_NB
+from const import *
 
+SECONDS_PER_MINUTE : Final = 60
+SECONDS_PER_HOUR : Final = 3600
+HOURS_PER_DAY : Final = 24
 
 class Event:
     def __init__(
@@ -40,7 +44,7 @@ class Event:
 
         result = self.summary
         trimmed = False
-        if 0 <= limit_char < len(result):
+        if MIN_CHAR_NB < limit_char < len(result):
             trimmed = True
             result = "".join([c for c in result][:limit_char])
 
@@ -82,21 +86,23 @@ class Event:
         return self.get_datetime().date() == tomorrow.date()
 
     def is_this_week(self) -> bool:
-        next_week = dt.datetime.today() + dt.timedelta(days=7)
+        next_week = dt.datetime.today() + dt.timedelta(days=DAYS_PER_WEEK)
         return self.get_datetime().date() < next_week.date()
 
     def is_urgent(self) -> bool:
         now = dt.datetime.now()
-        urgent = now + dt.timedelta(minutes=5)
-        five_minutes_started = self.get_datetime() + dt.timedelta(minutes=5)
-        # is urgent if it begins in five minutes and if it hasn't passed 5 minutes it started
+        urgent = now + dt.timedelta(minutes=URGENT_DELAY_MN)
+        five_minutes_started = self.get_datetime() + dt.timedelta(minutes=URGENT_DELAY_MN)
+        # is urgent if it begins in URGENT_DELAY_MN minutes and if it hasn't
+        # passed URGENT_DELAY_MN minutes it started
         return self.get_datetime() < urgent and not now > five_minutes_started
 
     def is_allday(self) -> bool:
         time_delta = self.end_time - self.start_time
         # event is considered all day if its start time and end time are both 00:00:00
         # and the time difference between start and finish is divisible by 24
-        return self.get_datetime().time() == dt.time(0) and time_delta % 24 == 0
+        return self.get_datetime().time() == dt.time(0) \
+                and time_delta % HOURS_PER_DAY == 0
 
 
 class EventEncoder(json.JSONEncoder):
@@ -109,8 +115,8 @@ class EventEncoder(json.JSONEncoder):
 
 def human_delta(tdelta : dt.timedelta) -> LiteralString:
     d : dict[str, int] = dict(days=tdelta.days)
-    d["hrs"], rem = divmod(tdelta.seconds, 3600)
-    d["min"], d["sec"] = divmod(rem, 60)
+    d["hrs"], rem = divmod(tdelta.seconds, SECONDS_PER_HOUR)
+    d["min"], d["sec"] = divmod(rem, SECONDS_PER_MINUTE)
 
     if d["min"] == 0:
         fmt = "0m"
@@ -143,11 +149,11 @@ def get_future_events(events: List[Event], hide_event_after: int, show_event_bef
             continue
 
         # Event won't start for more than show_event_before
-        if show_event_before > -1 and now + 60 * show_event_before < event.start_time:
+        if show_event_before > MIN_DELAY and now + SECONDS_PER_MINUTE * show_event_before < event.start_time:
             continue
 
         # If the event started more than hide_event_after ago
-        if hide_event_after > -1 and event.start_time + 60 * hide_event_after < now:
+        if hide_event_after > MIN_DELAY and event.start_time + SECONDS_PER_MINUTE * hide_event_after < now:
             continue
 
         future_events.append(event)
