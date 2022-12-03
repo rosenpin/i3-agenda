@@ -2,6 +2,8 @@ import re
 import json
 import time
 import datetime as dt
+from typing_extensions import LiteralString
+from typing import Union
 from bidi.algorithm import get_display
 
 from typing import Optional, List
@@ -14,17 +16,17 @@ class Event:
         summary: str,
         start_time: float,
         end_time: float,
-        location: str,
-    ):
+        location: Union[str, None]
+    ) -> None:
         self.summary = summary
         self.start_time = start_time
         self.end_time = end_time
         self.location = location
 
-    def get_datetime(self):
+    def get_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.start_time)
 
-    def get_end_datetime(self):
+    def get_end_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.end_time)
 
     def get_string(
@@ -66,24 +68,24 @@ class Event:
         else:
             return f"{event_datetime:{date_format} at %H:%M} {result}"
 
-    def is_ongoing(self):
+    def is_ongoing(self) -> bool:
         now = dt.datetime.now()
         ongoing = now > self.get_datetime() and not now > self.get_end_datetime()
         return ongoing
 
-    def is_today(self):
+    def is_today(self) -> bool:
         today = dt.datetime.today()
         return self.get_datetime().date() == today.date()
 
-    def is_tomorrow(self):
+    def is_tomorrow(self) -> bool:
         tomorrow = dt.datetime.today() + dt.timedelta(days=1)
         return self.get_datetime().date() == tomorrow.date()
 
-    def is_this_week(self):
+    def is_this_week(self) -> bool:
         next_week = dt.datetime.today() + dt.timedelta(days=7)
         return self.get_datetime().date() < next_week.date()
 
-    def is_urgent(self):
+    def is_urgent(self) -> bool:
         now = dt.datetime.now()
         urgent = now + dt.timedelta(minutes=5)
         five_minutes_started = self.get_datetime() + dt.timedelta(minutes=5)
@@ -105,8 +107,8 @@ class EventEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, o)
 
 
-def human_delta(tdelta):
-    d = dict(days=tdelta.days)
+def human_delta(tdelta : dt.timedelta) -> LiteralString:
+    d : dict[str, int] = dict(days=tdelta.days)
     d["hrs"], rem = divmod(tdelta.seconds, 3600)
     d["min"], d["sec"] = divmod(rem, 60)
 
