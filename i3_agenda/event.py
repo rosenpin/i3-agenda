@@ -1,14 +1,15 @@
-import re
-import json
-import time
 import datetime as dt
-from typing_extensions import LiteralString
+import json
+import re
+import time
 from typing import Union
+from typing import List, Optional
+
 from bidi.algorithm import get_display
 
-from typing import Optional, List
-from config import URL_REGEX, MIN_DELAY, MIN_CHAR_NB
+from config import MIN_CHAR_NB, MIN_DELAY, URL_REGEX
 from const import *
+from helpers import get_unix_time, human_delta
 
 
 class Event:
@@ -110,21 +111,6 @@ class EventEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, o)
 
 
-def human_delta(tdelta : dt.timedelta) -> LiteralString:
-    d : dict[str, int] = dict(days=tdelta.days)
-    d["hrs"], rem = divmod(tdelta.seconds, SECONDS_PER_HOUR)
-    d["min"], d["sec"] = divmod(rem, SECONDS_PER_MINUTE)
-
-    if d["min"] == 0:
-        fmt = "0m"
-    elif d["hrs"] == 0:
-        fmt = "{min}m"
-    elif d["days"] == 0:
-        fmt = "{hrs}h {min}m"
-    else:
-        fmt = "{days} day(s) {hrs}h {min}m"
-
-    return fmt.format(**d)
 
 
 def sort_events(events: List[Event]) -> List[Event]:
@@ -167,21 +153,6 @@ def get_closest(events: List[Event]) -> Optional[Event]:
     return closest
 
 
-def get_unix_time(full_time: str) -> float:
-    if "T" in full_time:
-        event_time_format = "%Y-%m-%dT%H:%M:%S%z"
-    else:
-        event_time_format = "%Y-%m-%d"
-
-    # Python introduced the ability to parse ":" in the timezone format (in strptime()) only from version 3.7 and up.
-    # We need to remove the : before the timezone to support older versions
-    # See https://stackoverflow.com/questions/30999230/how-to-parse-timezone-with-colon for more information
-    if full_time[-3] == ":":
-        full_time = full_time[:-3] + full_time[-2:]
-
-    return time.mktime(
-        dt.datetime.strptime(full_time, event_time_format).astimezone().timetuple()
-    )
 
 
 def from_json(event_json) -> Event:
