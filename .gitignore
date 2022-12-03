@@ -9,3 +9,4 @@ i3_agenda/__pycache__
 .vim/coc-settings.json
 .eggs/
 .venv
+.mypy_cache/
