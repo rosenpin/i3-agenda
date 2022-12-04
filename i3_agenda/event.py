@@ -82,8 +82,9 @@ class Event:
         return self.get_datetime().date() == tomorrow.date()
 
     def is_this_week(self) -> bool:
-        next_week = dt.datetime.today() + dt.timedelta(days=DAYS_PER_WEEK)
-        return self.get_datetime().date() < next_week.date()
+        today = dt.datetime.today()
+        next_week = today + dt.timedelta(days=DAYS_PER_WEEK)
+        return today.date() <= self.get_datetime().date() < next_week.date()
 
     def is_urgent(self) -> bool:
         now = dt.datetime.now()
@@ -98,7 +99,8 @@ class Event:
         # event is considered all day if its start time and end time are both 00:00:00
         # and the time difference between start and finish is divisible by 24
         return self.get_datetime().time() == dt.time(0) \
-                and time_delta % HOURS_PER_DAY == 0
+                and self.get_end_datetime().time() == dt.time(0) \
+                and time_delta % SECONDS_PER_DAY == 0
 
 
 class EventEncoder(json.JSONEncoder):
