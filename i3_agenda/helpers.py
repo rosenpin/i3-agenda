@@ -1,25 +1,29 @@
 import datetime as dt
 import time
 from typing_extensions import LiteralString
+from string import Formatter
 
 from const import *
 
 
-def human_delta(tdelta : dt.timedelta) -> LiteralString:
-    d : dict[str, int] = dict(days=tdelta.days)
-    d["hrs"], rem = divmod(tdelta.seconds, SECONDS_PER_HOUR)
-    d["min"], d["sec"] = divmod(rem, SECONDS_PER_MINUTE)
+def human_delta(tdelta : dt.timedelta) -> str:
+    duration = [ 0 ] * 4  # will hold decomposition of tdelta in d, h, m, s
+    fmt = ['{d[0]} day(s)', '{d[1]}h', '{d[2]}m', '{d[3]}s']
 
-    if d["min"] == 0:
-        fmt = "0m"
-    elif d["hrs"] == 0:
-        fmt = "{min}m"
-    elif d["days"] == 0:
-        fmt = "{hrs}h {min}m"
-    else:
-        fmt = "{days} day(s) {hrs}h {min}m"
+    total_seconds = int(tdelta.total_seconds())
 
-    return fmt.format(**d)
+    # convert total_seconds in d, h, m ,s
+    duration[0], rem = divmod(total_seconds, SECONDS_PER_DAY)
+    duration[1], rem = divmod(rem, SECONDS_PER_HOUR)
+    duration[2], duration[3] = divmod(rem, SECONDS_PER_MINUTE)
+
+    # Keep only format for non null value
+    fmt =  ' '.join([ fmt[i] for i in range(len(duration)) if duration[i] > 0])
+    if not fmt:
+        return "0m"
+
+    return fmt.format(d = duration)
+
 
 def make_tz_backward_compatible(full_time : str) -> str:
     # Python introduced the ability to parse ":" in the timezone format (in strptime()) only from version 3.7 and up.
