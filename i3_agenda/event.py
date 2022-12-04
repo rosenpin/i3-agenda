@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from bidi.algorithm import get_display
 
-from config import MIN_CHAR_NB, MIN_DELAY, URL_REGEX
+from config import MIN_CHARS, MIN_DELAY, URL_REGEX
 from const import *
 from helpers import get_unix_time, human_delta
 
@@ -45,7 +45,7 @@ class Event:
 
         result = self.summary
         trimmed = False
-        if MIN_CHAR_NB < limit_char < len(result):
+        if MIN_CHARS < limit_char < len(result):
             trimmed = True
             result = "".join([c for c in result][:limit_char])
 

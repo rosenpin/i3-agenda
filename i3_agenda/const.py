@@ -6,7 +6,7 @@ SECONDS_PER_HOUR : Final = 3600
 SECONDS_PER_MINUTE : Final = 60
 URGENT_DELAY_MN : Final = 5
 
-MIN_CHAR_NB : Final = -1
+MIN_CHARS : Final = -1
 MIN_DELAY : Final = -1
 
 LEFT_MOUSE_BUTTON : Final = "1"

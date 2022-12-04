@@ -95,7 +95,7 @@ parser.add_argument(
     "--limchar",
     "-l",
     type=int,
-    default=MIN_CHAR_NB,
+    default=MIN_CHARS,
     help="the max characters that the displayed event can contain",
 )
 parser.add_argument(
