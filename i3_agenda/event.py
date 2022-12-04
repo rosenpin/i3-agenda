@@ -10,23 +10,18 @@ from bidi.algorithm import get_display
 from config import MIN_CHARS, MIN_DELAY, URL_REGEX
 from const import *
 from helpers import get_unix_time, human_delta
+from dataclasses import dataclass
 
 SECONDS_PER_MINUTE : Final = 60
 SECONDS_PER_HOUR : Final = 3600
 HOURS_PER_DAY : Final = 24
 
+@dataclass
 class Event:
-    def __init__(
-        self,
-        summary: str,
-        start_time: float,
-        end_time: float,
-        location: Union[str, None]
-    ) -> None:
-        self.summary = summary
-        self.start_time = start_time
-        self.end_time = end_time
-        self.location = location
+    summary: str
+    start_time: float
+    end_time: float
+    location: Union[str, None]
 
     def get_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.start_time)
