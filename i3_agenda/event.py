@@ -39,15 +39,14 @@ class Event:
         event_datetime = self.get_datetime()
 
         result = self.summary
-        trimmed = False
+        trimmed = ""
         if MIN_CHARS < limit_char < len(result):
-            trimmed = True
-            result = "".join([c for c in result][:limit_char])
+            trimmed = "".join([c for c in result][:limit_char])
 
-        result = str(get_display(result))
         # this is done to preserve RTL while adding the "..." since the get_display is applied after adding the "..."
         if trimmed:
-            result += "..."
+            result = trimmed + "..."
+        result = str(get_display(result))
 
         if self.is_ongoing():
             if ongoing_time_left:
