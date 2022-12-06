@@ -3,6 +3,8 @@ import datetime as dt
 
 import pytest
 
+from typing import Dict
+
 from helpers import *
 
 
@@ -16,6 +18,6 @@ from helpers import *
     ({"hours":23, "minutes":59}, "23h 59m"),
 ]
 )
-def test_human_delta(test_input:dict[str,int],expected:str):
+def test_human_delta(test_input:Dict[str,int],expected:str):
     assert human_delta(dt.timedelta(**test_input)) == expected
 

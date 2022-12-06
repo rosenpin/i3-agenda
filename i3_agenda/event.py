@@ -2,8 +2,7 @@ import datetime as dt
 import json
 import re
 import time
-from typing import Union
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union, Dict
 
 from bidi.algorithm import get_display
 
@@ -154,7 +153,7 @@ def get_closest(events: List[Event]) -> Optional[Event]:
 
 
 
-def from_json(event_json : dict[str,Any]) -> Event:
+def from_json(event_json : Dict[str,Any]) -> Event:
     end_time = int(get_unix_time(
         event_json["end"].get("dateTime", event_json["end"].get("date")))
     )
