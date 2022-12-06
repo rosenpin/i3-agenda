@@ -19,8 +19,8 @@ HOURS_PER_DAY : Final = 24
 @dataclass
 class Event:
     summary: str
-    start_time: float
-    end_time: float
+    start_time: int
+    end_time: int
     location: Union[str, None]
 
     def get_datetime(self) -> dt.datetime:
@@ -155,11 +155,11 @@ def get_closest(events: List[Event]) -> Optional[Event]:
 
 
 def from_json(event_json : dict[str,Any]) -> Event:
-    end_time = get_unix_time(
-        event_json["end"].get("dateTime", event_json["end"].get("date"))
+    end_time = int(get_unix_time(
+        event_json["end"].get("dateTime", event_json["end"].get("date")))
     )
     start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
-    start_time = get_unix_time(start_time)
+    start_time = int(get_unix_time(start_time))
 
     location = None
 
