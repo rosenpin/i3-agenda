@@ -8,7 +8,7 @@ from const import *
 
 def human_delta(tdelta : dt.timedelta) -> str:
     duration = [ 0 ] * 4  # will hold decomposition of tdelta in d, h, m, s
-    fmt = ['{d[0]} day(s)', '{d[1]}h', '{d[2]}m', '{d[3]}s']
+    fmts = ['{d[0]} day(s)', '{d[1]}h', '{d[2]}m', '{d[3]}s']
 
     total_seconds = int(tdelta.total_seconds())
 
@@ -18,7 +18,7 @@ def human_delta(tdelta : dt.timedelta) -> str:
     duration[2], duration[3] = divmod(rem, SECONDS_PER_MINUTE)
 
     # Keep only format for non null value
-    fmt =  ' '.join([ fmt[i] for i in range(len(duration)) if duration[i] > 0])
+    fmt =  ' '.join([ fmts[i] for i in range(len(duration)) if duration[i] > 0])
     if not fmt:
         return "0m"
 
