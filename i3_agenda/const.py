@@ -1,4 +1,4 @@
-from typing import Final
+from typing_extensions import Final
 
 DAYS_PER_WEEK : Final = 7
 HOURS_PER_DAY : Final = 24
