@@ -1,11 +1,15 @@
-import re
-import json
-import time
 import datetime as dt
+import json
+import re
+import time
+from typing import Union
+from typing import List, Optional
+
 from bidi.algorithm import get_display
 
-from typing import Optional, List
-from config import URL_REGEX
+from config import MIN_CHARS, MIN_DELAY, URL_REGEX
+from const import *
+from helpers import get_unix_time, human_delta
 
 
 class Event:
@@ -14,17 +18,17 @@ class Event:
         summary: str,
         start_time: float,
         end_time: float,
-        location: str,
-    ):
+        location: Union[str, None]
+    ) -> None:
         self.summary = summary
         self.start_time = start_time
         self.end_time = end_time
         self.location = location
 
-    def get_datetime(self):
+    def get_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.start_time)
 
-    def get_end_datetime(self):
+    def get_end_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.end_time)
 
     def get_string(
@@ -38,7 +42,7 @@ class Event:
 
         result = self.summary
         trimmed = False
-        if 0 <= limit_char < len(result):
+        if MIN_CHARS < limit_char < len(result):
             trimmed = True
             result = "".join([c for c in result][:limit_char])
 
@@ -66,35 +70,37 @@ class Event:
         else:
             return f"{event_datetime:{date_format} at %H:%M} {result}"
 
-    def is_ongoing(self):
+    def is_ongoing(self) -> bool:
         now = dt.datetime.now()
         ongoing = now > self.get_datetime() and not now > self.get_end_datetime()
         return ongoing
 
-    def is_today(self):
+    def is_today(self) -> bool:
         today = dt.datetime.today()
         return self.get_datetime().date() == today.date()
 
-    def is_tomorrow(self):
+    def is_tomorrow(self) -> bool:
         tomorrow = dt.datetime.today() + dt.timedelta(days=1)
         return self.get_datetime().date() == tomorrow.date()
 
-    def is_this_week(self):
-        next_week = dt.datetime.today() + dt.timedelta(days=7)
+    def is_this_week(self) -> bool:
+        next_week = dt.datetime.today() + dt.timedelta(days=DAYS_PER_WEEK)
         return self.get_datetime().date() < next_week.date()
 
-    def is_urgent(self):
+    def is_urgent(self) -> bool:
         now = dt.datetime.now()
-        urgent = now + dt.timedelta(minutes=5)
-        five_minutes_started = self.get_datetime() + dt.timedelta(minutes=5)
-        # is urgent if it begins in five minutes and if it hasn't passed 5 minutes it started
+        urgent = now + dt.timedelta(minutes=URGENT_DELAY_MN)
+        five_minutes_started = self.get_datetime() + dt.timedelta(minutes=URGENT_DELAY_MN)
+        # is urgent if it begins in URGENT_DELAY_MN minutes and if it hasn't
+        # passed URGENT_DELAY_MN minutes it started
         return self.get_datetime() < urgent and not now > five_minutes_started
 
     def is_allday(self) -> bool:
         time_delta = self.end_time - self.start_time
         # event is considered all day if its start time and end time are both 00:00:00
         # and the time difference between start and finish is divisible by 24
-        return self.get_datetime().time() == dt.time(0) and time_delta % 24 == 0
+        return self.get_datetime().time() == dt.time(0) \
+                and time_delta % HOURS_PER_DAY == 0
 
 
 class EventEncoder(json.JSONEncoder):
@@ -105,21 +111,6 @@ class EventEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, o)
 
 
-def human_delta(tdelta):
-    d = dict(days=tdelta.days)
-    d["hrs"], rem = divmod(tdelta.seconds, 3600)
-    d["min"], d["sec"] = divmod(rem, 60)
-
-    if d["min"] == 0:
-        fmt = "0m"
-    elif d["hrs"] == 0:
-        fmt = "{min}m"
-    elif d["days"] == 0:
-        fmt = "{hrs}h {min}m"
-    else:
-        fmt = "{days} day(s) {hrs}h {min}m"
-
-    return fmt.format(**d)
 
 
 def sort_events(events: List[Event]) -> List[Event]:
@@ -141,11 +132,11 @@ def get_future_events(events: List[Event], hide_event_after: int, show_event_bef
             continue
 
         # Event won't start for more than show_event_before
-        if show_event_before > -1 and now + 60 * show_event_before < event.start_time:
+        if show_event_before > MIN_DELAY and now + SECONDS_PER_MINUTE * show_event_before < event.start_time:
             continue
 
         # If the event started more than hide_event_after ago
-        if hide_event_after > -1 and event.start_time + 60 * hide_event_after < now:
+        if hide_event_after > MIN_DELAY and event.start_time + SECONDS_PER_MINUTE * hide_event_after < now:
             continue
 
         future_events.append(event)
@@ -162,21 +153,6 @@ def get_closest(events: List[Event]) -> Optional[Event]:
     return closest
 
 
-def get_unix_time(full_time: str) -> float:
-    if "T" in full_time:
-        event_time_format = "%Y-%m-%dT%H:%M:%S%z"
-    else:
-        event_time_format = "%Y-%m-%d"
-
-    # Python introduced the ability to parse ":" in the timezone format (in strptime()) only from version 3.7 and up.
-    # We need to remove the : before the timezone to support older versions
-    # See https://stackoverflow.com/questions/30999230/how-to-parse-timezone-with-colon for more information
-    if full_time[-3] == ":":
-        full_time = full_time[:-3] + full_time[-2:]
-
-    return time.mktime(
-        dt.datetime.strptime(full_time, event_time_format).astimezone().timetuple()
-    )
 
 
 def from_json(event_json) -> Event:

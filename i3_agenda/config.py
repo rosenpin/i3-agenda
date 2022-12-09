@@ -1,6 +1,9 @@
 import os
 from os.path import expanduser
+from typing import Final
 import argparse
+from const import *
+
 
 CONF_DIR = expanduser("~") + os.path.sep + ".i3agenda"
 URL_REGEX = "(((http|https)://)?[a-zA-Z0-9./?:@\\-_=#]+\\.([a-zA-Z]){2,6}([a-zA-Z0-9.&/?:@\\-_=#])*)"
@@ -68,14 +71,14 @@ parser.add_argument(
 parser.add_argument(
     "--hide-event-after",
     type=int,
-    default=-1,
+    default=MIN_DELAY,
     help="""minutes to show events after they start before showing the next event. If not specified, the current event
             will be shown until it ends""",
 )
 parser.add_argument(
     "--show-event-before",
     type=int,
-    default=-1,
+    default=MIN_DELAY,
     help="""minutes to show events before they start. If not specified, the next event
             will be shown regardless of when it starts""",
 )
@@ -89,7 +92,7 @@ parser.add_argument(
     "--limchar",
     "-l",
     type=int,
-    default=-1,
+    default=MIN_CHARS,
     help="the max characters that the displayed event can contain",
 )
 parser.add_argument(

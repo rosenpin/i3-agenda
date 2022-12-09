@@ -9,18 +9,21 @@ from typing import List, Optional
 import datetime
 
 from event import Event, get_closest, sort_events, get_future_events
+from typing import Final
+from const import *
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
 
 
 def button_action(button_code: str, closest: Event):
     if button_code != "":
-        if button_code == "1":
+        if button_code == LEFT_MOUSE_BUTTON:
             print("Opening calendar page...")
             subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
-        elif button_code == "3":
-            print("Opening location link...")
-            subprocess.Popen(["xdg-open", closest.location])
+        elif button_code == RIGHT_MOUSE_BUTTON:
+            if closest.location: 
+                print("Opening location link...")
+                subprocess.Popen(["xdg-open", closest.location])
 
 
 def filter_only_todays_events(events: List[Event]) -> Optional[List[Event]]:
