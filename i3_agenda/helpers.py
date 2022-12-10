@@ -1,7 +1,6 @@
 import datetime as dt
 import time
 from typing_extensions import LiteralString
-from string import Formatter
 
 from const import *
 
@@ -23,6 +22,7 @@ def human_delta(tdelta : dt.timedelta) -> str:
         return "0m"
 
     return fmt.format(d = duration)
+
 
 
 def make_tz_backward_compatible(full_time : str) -> str:

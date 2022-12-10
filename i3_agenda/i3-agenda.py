@@ -9,6 +9,7 @@ from typing import List, Optional
 import datetime
 
 from event import Event, get_closest, sort_events, get_future_events
+
 from typing import Union
 from const import *
 
@@ -43,6 +44,7 @@ def load_events(args) -> List[Event]:
     from cache_utils import load_cache, save_cache
 
     events : Union[None,list[Event]] = None
+
     if not args.update:
         events = load_cache(args.cachettl)
         if args.today:

@@ -4,12 +4,14 @@ import re
 import time
 from typing import List, Optional, Any, Union, Dict
 
+
 from bidi.algorithm import get_display
 
 from config import MIN_CHARS, MIN_DELAY, URL_REGEX
 from const import *
 from helpers import get_unix_time, human_delta
 from dataclasses import dataclass
+
 
 SECONDS_PER_MINUTE : Final = 60
 SECONDS_PER_HOUR : Final = 3600
@@ -21,6 +23,7 @@ class Event:
     start_time: int
     end_time: int
     location: Union[str, None]
+
 
     def get_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.start_time)
@@ -84,6 +87,7 @@ class Event:
         next_week = today + dt.timedelta(days=DAYS_PER_WEEK)
         return today.date() <= self.get_datetime().date() < next_week.date()
 
+
     def is_urgent(self) -> bool:
         now = dt.datetime.now()
         urgent = now + dt.timedelta(minutes=URGENT_DELAY_MN)
@@ -99,6 +103,7 @@ class Event:
         return self.get_datetime().time() == dt.time(0) \
                 and self.get_end_datetime().time() == dt.time(0) \
                 and time_delta % SECONDS_PER_DAY == 0
+
 
 
 class EventEncoder(json.JSONEncoder):

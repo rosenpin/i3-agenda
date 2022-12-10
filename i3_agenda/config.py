@@ -1,11 +1,10 @@
 import os
 from os.path import expanduser
+from typing import Final
 import argparse
 from const import *
 
 
-MIN_DELAY : Final = -1
-MIN_CHAR_NB : Final = -1
 
 CONF_DIR = expanduser("~") + os.path.sep + ".i3agenda"
 URL_REGEX = "(((http|https)://)?[a-zA-Z0-9./?:@\\-_=#]+\\.([a-zA-Z]){2,6}([a-zA-Z0-9.&/?:@\\-_=#])*)"
