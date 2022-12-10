@@ -13,9 +13,6 @@ from helpers import get_unix_time, human_delta
 from dataclasses import dataclass
 
 
-SECONDS_PER_MINUTE : Final = 60
-SECONDS_PER_HOUR : Final = 3600
-HOURS_PER_DAY : Final = 24
 
 @dataclass
 class Event:
