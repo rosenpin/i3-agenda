@@ -35,7 +35,7 @@ jobs:
           pytest --doctest-modules --cov=. --cov-report=xml:../coverage/cov.xml --cov-report=html:../coverage/
 
       - name: Code Coverage Report
-        uses: irongut/CodeCoverageSummary@v1.3.0
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95
         with:
           filename: coverage/cov.xml
           badge: true
@@ -48,7 +48,7 @@ jobs:
           thresholds: '60 80'
 
       - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1
         if: github.event_name == 'pull_request'
         with:
           recreate: true
