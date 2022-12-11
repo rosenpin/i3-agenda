@@ -2,28 +2,25 @@ import datetime as dt
 import json
 import re
 import time
-from typing import Union
-from typing import List, Optional
+from typing import List, Optional, Any, Union, Dict
+
 
 from bidi.algorithm import get_display
 
 from config import MIN_CHARS, MIN_DELAY, URL_REGEX
 from const import *
 from helpers import get_unix_time, human_delta
+from dataclasses import dataclass
 
 
+
+@dataclass
 class Event:
-    def __init__(
-        self,
-        summary: str,
-        start_time: float,
-        end_time: float,
-        location: Union[str, None]
-    ) -> None:
-        self.summary = summary
-        self.start_time = start_time
-        self.end_time = end_time
-        self.location = location
+    summary: str
+    start_time: int
+    end_time: int
+    location: Union[str, None]
+
 
     def get_datetime(self) -> dt.datetime:
         return dt.datetime.fromtimestamp(self.start_time)
@@ -41,15 +38,14 @@ class Event:
         event_datetime = self.get_datetime()
 
         result = self.summary
-        trimmed = False
+        trimmed = ""
         if MIN_CHARS < limit_char < len(result):
-            trimmed = True
-            result = "".join([c for c in result][:limit_char])
+            trimmed = "".join([c for c in result][:limit_char])
 
-        result = str(get_display(result))
         # this is done to preserve RTL while adding the "..." since the get_display is applied after adding the "..."
         if trimmed:
-            result += "..."
+            result = trimmed + "..."
+        result = str(get_display(result))
 
         if self.is_ongoing():
             if ongoing_time_left:
@@ -84,8 +80,10 @@ class Event:
         return self.get_datetime().date() == tomorrow.date()
 
     def is_this_week(self) -> bool:
-        next_week = dt.datetime.today() + dt.timedelta(days=DAYS_PER_WEEK)
-        return self.get_datetime().date() < next_week.date()
+        today = dt.datetime.today()
+        next_week = today + dt.timedelta(days=DAYS_PER_WEEK)
+        return today.date() <= self.get_datetime().date() < next_week.date()
+
 
     def is_urgent(self) -> bool:
         now = dt.datetime.now()
@@ -100,7 +98,9 @@ class Event:
         # event is considered all day if its start time and end time are both 00:00:00
         # and the time difference between start and finish is divisible by 24
         return self.get_datetime().time() == dt.time(0) \
-                and time_delta % HOURS_PER_DAY == 0
+                and self.get_end_datetime().time() == dt.time(0) \
+                and time_delta % SECONDS_PER_DAY == 0
+
 
 
 class EventEncoder(json.JSONEncoder):
@@ -155,12 +155,12 @@ def get_closest(events: List[Event]) -> Optional[Event]:
 
 
 
-def from_json(event_json) -> Event:
-    end_time = get_unix_time(
-        event_json["end"].get("dateTime", event_json["end"].get("date"))
+def from_json(event_json : Dict[str,Any]) -> Event:
+    end_time = int(get_unix_time(
+        event_json["end"].get("dateTime", event_json["end"].get("date")))
     )
     start_time = event_json["start"].get("dateTime", event_json["start"].get("date"))
-    start_time = get_unix_time(start_time)
+    start_time = int(get_unix_time(start_time))
 
     location = None
 

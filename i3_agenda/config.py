@@ -1,8 +1,8 @@
 import os
 from os.path import expanduser
-from typing import Final
 import argparse
 from const import *
+
 
 
 CONF_DIR = expanduser("~") + os.path.sep + ".i3agenda"

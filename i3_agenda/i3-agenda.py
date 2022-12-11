@@ -9,7 +9,8 @@ from typing import List, Optional
 import datetime
 
 from event import Event, get_closest, sort_events, get_future_events
-from typing import Final
+
+from typing import Union
 from const import *
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
@@ -42,7 +43,8 @@ def load_events(args) -> List[Event]:
     from API import get_events
     from cache_utils import load_cache, save_cache
 
-    events = []
+    events : Union[None,list[Event]] = None
+
     if not args.update:
         events = load_cache(args.cachettl)
         if args.today:
