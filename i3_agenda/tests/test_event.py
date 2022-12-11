@@ -344,8 +344,8 @@ def test_get_string_description(description, expected):
 
     event = Event(
                 summary=description,
-                start_time=(now + dt.timedelta(days=8, seconds=1)).timestamp(),
-                end_time=(now + dt.timedelta(hours=1, seconds=1)).timestamp(),
+                start_time=int((now + dt.timedelta(days=8, seconds=1)).timestamp()),
+                end_time=int((now + dt.timedelta(hours=1, seconds=1)).timestamp()),
                 location=None,
                 )
     result = event.get_string(
