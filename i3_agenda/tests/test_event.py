@@ -7,6 +7,7 @@ import pytest
 
 from event import *
 
+
 os.environ['TZ'] = 'UTC'
 time.tzset()
 
@@ -116,7 +117,7 @@ def test_get_future_events_without_after_before():
     ]
     # It should only keep the two last
     expected = events[-2:]
-    assert get_future_events(events, -1, -1) == expected
+    assert get_future_events(events, MIN_DELAY, MIN_DELAY) == expected
 
 
 @freeze_time("2022-12-14 12:10:07")
@@ -134,7 +135,7 @@ def test_get_future_events_with_after():
     ]
     # It should only keep the two last
     expected = events[-2:]
-    assert get_future_events(events, 5, -1) == expected
+    assert get_future_events(events, 5, MIN_DELAY) == expected
 
 
 @freeze_time("2022-12-14 12:10:07")
@@ -149,7 +150,7 @@ def test_get_future_events_with_before():
     ]
     # It should only keep the two  last
     expected = events[-2:]
-    assert get_future_events(events, -1, 5) == expected
+    assert get_future_events(events, MIN_DELAY, 5) == expected
 
 
 def test_get_closest():
