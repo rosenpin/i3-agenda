@@ -341,7 +341,6 @@ def test_get_string(event_params, otl: bool, netl: bool, expected):
     ])
 @freeze_time(now + dt.timedelta(seconds=1))
 def test_get_string_description(description, expected):
-
     event = Event(
                 summary=description,
                 start_time=int((now + dt.timedelta(days=8, seconds=1)).timestamp()),
