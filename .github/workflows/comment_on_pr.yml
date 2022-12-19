@@ -12,14 +12,14 @@ jobs:
     steps:
       - name: on artifact
         id: artifact
-        uses: marocchino/on_artifact@v1
+        uses: marocchino/on_artifact@fa52c295bf1972c5d09a615f31edb68c4438fb06 # v1
         with:
           name: coverage
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
         with:
           header: Coverage
           number: ${{ steps.artifact.outputs.number }}
           message: |
             ```
-            ${{ steps.artifact.outputs.all_result }}
+            ${{ steps.artifact.outputs.code_coverage_md }}
             ```
