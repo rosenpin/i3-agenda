@@ -54,7 +54,8 @@ jobs:
           echo ${{ github.event.number }} | tee ./pr/number
           cat code-coverage-results.md | tee ./pr/code_coverage_md
       - uses: actions/upload-artifact@v3
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.10' }}
+
         with:
           name: coverage
           path: pr/
