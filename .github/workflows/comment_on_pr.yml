@@ -20,6 +20,4 @@ jobs:
           header: Coverage
           number: ${{ steps.artifact.outputs.number }}
           message: |
-            ```
             ${{ steps.artifact.outputs.code_coverage_md }}
-            ```
