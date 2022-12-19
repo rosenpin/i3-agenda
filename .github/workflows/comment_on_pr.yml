@@ -1,0 +1,25 @@
+name: Comment on PR
+on:
+  workflow_run:
+    workflows:
+      - "Python package"
+    types:
+      - completed
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    steps:
+      - name: on artifact
+        id: artifact
+        uses: marocchino/on_artifact@v1
+        with:
+          name: coverage
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Coverage
+          number: ${{ steps.artifact.outputs.number }}
+          message: |
+            ```
+            ${{ steps.artifact.outputs.all_result }}
+            ```

@@ -31,7 +31,7 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": [
-            "i3-agenda = i3_agenda.i3-agenda:main",
+            "i3-agenda = i3_agenda.i3_agenda:main",
         ],
     },
     python_requires=">=3.3",
