@@ -6,6 +6,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    # run on push and run on PR if the PR is from a forked repository"
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
@@ -47,15 +49,13 @@ jobs:
           output: both
           thresholds: '60 80'
       - name: Save PR number
-        if: ${{ github.event_name == 'pull_request' }}
         run: |
           mkdir -p ./pr
           # this file name `number` will be output variable name later
           echo ${{ github.event.number }} | tee ./pr/number
           cat code-coverage-results.md | tee ./pr/code_coverage_md
       - uses: actions/upload-artifact@v3
-        if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.10' }}
-
+        if: ${{ matrix.python-version == '3.10' }}
         with:
           name: coverage
           path: pr/

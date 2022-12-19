@@ -86,7 +86,7 @@ parser.add_argument(
     "--date-format",
     type=str,
     default="%d/%m",
-    help="the date format like %%d/%%m/%%y. Default is %%d/%%m",
+    help="the date format like %%d/%%m/%%y used for events starting in more than on week. Default is %%d/%%m",
 )
 parser.add_argument(
     "--limchar",
