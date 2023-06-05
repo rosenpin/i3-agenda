@@ -24,14 +24,17 @@ setuptools.setup(
         "aiohttp",
     ],
     scripts=[
-        "i3_agenda/config.py",
-        "i3_agenda/event.py",
         "i3_agenda/API.py",
         "i3_agenda/cache_utils.py",
+        "i3_agenda/config.py",
+        "i3_agenda/const.py",
+        "i3_agenda/event.py",
+        "i3_agenda/helpers.py",
+        "i3_agenda/i3_agenda.py",
     ],
     entry_points={
         "console_scripts": [
-            "i3-agenda = i3_agenda.i3_agenda:main",
+            "i3-agenda = i3_agenda:main",
         ],
     },
     python_requires=">=3.3",
