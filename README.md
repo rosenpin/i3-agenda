@@ -46,7 +46,7 @@ Make sure python3 is your default python.\
 Run `sudo pip3 install python-bidi google-api-python-client google-auth-httplib2 google-auth-oauthlib`
 
 1. Clone the repo to a local directory `cd ~/ && git clone https://github.com/rosenpin/i3-agenda && cd i3-agenda`
-3. Run the script `python3 i3_agenda/__init__.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.
+3. Run the script `python3 i3_agenda/i3_agenda.py -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step. If configured correctly, it will prompt you to log in in your browser, accept everything. It should print your next event.
 4. Optional: you can run `sudo python setup.py install` to add the script to your path so you can run `i3-agenda` anywhere.
 5. Add configuration to your bar (examples in the Examples section below).
 
