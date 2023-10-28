@@ -1,5 +1,5 @@
 [![AUR version](https://img.shields.io/aur/version/i3-agenda?style=flat-square&logo=arch-linux)](https://aur.archlinux.org/packages/i3-agenda/)
-[![PyPI](https://img.shields.io/pypi/v/i3-agenda?style=flat-square&logo=python)](https://pypi.org/project/i3-agenda/) <a href="https://github.com/rosenpin/i3-agenda/releases"><img src="https://img.shields.io/github/commits-since/rosenpin/i3-agenda/latest.svg?color=green" alt="Version Badge"></a> 
+[![PyPI](https://img.shields.io/pypi/v/i3-agenda?style=flat-square&logo=python)](https://pypi.org/project/i3-agenda/) <a href="https://github.com/rosenpin/i3-agenda/releases"><img src="https://img.shields.io/github/commits-since/rosenpin/i3-agenda/latest.svg?color=green" alt="Version Badge"></a>
 <a target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=9M8LL9GJXELBN" title="Donate using PayPal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" /></a>
 
 # What is this?
@@ -16,18 +16,32 @@ It will print the time and title of the closest event.
 # Setup
 
 ## Google API
+
 https://developers.google.com/calendar/quickstart/python
 
-1. You need to create a Google API project and download your OAuth 2.0 credentials json file.\
-You first need to create a project [here](https://console.developers.google.com/apis/credentials), then add Google Calendar support, then download the credentials.json file.\
-**Alternatively, you can just use [this link](https://developers.google.com/calendar/quickstart/python) and click "Enable the Google Calendar API". This will create a project, add Google Calendar support, and let you download the file in 1 click**.\
-If you're having trouble, you can use this tutorial for more information [https://developers.google.com/calendar/auth](https://developers.google.com/calendar/auth).\
-Another great guide can be found here if you're still having trouble: [https://github.com/jay0lee/GAM/wiki/CreatingClientSecretsFile](https://github.com/jay0lee/GAM/wiki/CreatingClientSecretsFile).
+1. You need to create a Google API project and download your OAuth 2.0
+   credentials json file.You first need to create a project [here][cred], then
+   add Google Calendar support, then download the credentials.json file.
+   **Alternatively, you can just use [this link][python] and click "Enable the
+   Google Calendar API". This will create a project, add Google Calendar
+   support, and let you download the file in 1 click**. If you're having
+   trouble, you can use this tutorial for more information
+   [https://developers.google.com/calendar/auth][auth]. Another great guide can
+   be found here if you're still having trouble:
+   [https://github.com/jay0lee/GAM/wiki/CreatingClientSecretsFile][secret].
 2. Download the credentials file to somewhere on your computer.
 3. Proceed to installation phase.
 
 ## Installation
 After downloading the credentials file, install the package.
+
+### Pipx
+
+Using [`pipx`][pipx] will save you time and it's crossplatform.
+
+```bash
+pipx install https://github.com/rosenpin/i3-agenda
+```
 
 ### Pip
 1. `sudo pip install i3-agenda`
@@ -90,7 +104,7 @@ Leaving the list empty will fetch all calendars (default behavior).
 It might not work properly if you have more than 10 all day events, this can be fixed by increasing the maxResults variable.
 
 ### RTL support
-If you use RTL or some of your events contain RTL languages, you will need to pipe [pybidi](https://pypi.org/project/python-bidi/) with the script. Example:  
+If you use RTL or some of your events contain RTL languages, you will need to pipe [pybidi](https://pypi.org/project/python-bidi/) with the script. Example:
 `i3-agenda -c ~/.google_credentials.json -ttl 60 | pybidi`
 
 ### Caching
@@ -120,7 +134,7 @@ interval = 60
 
 ### Example [SwiftBar](https://github.com/swiftbar/SwiftBar) configuration
 ![example](https://raw.githubusercontent.com/rosenpin/i3-agenda/master/art/mac_screenshot.png)
-This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events  
+This will show your next event as the menu bar title, when you press it you will see a dropdown with all your today events
 You can call the file `agenda.2m.sh` to make it refresh every 2 minutes
 ``` bash
 #!/bin/bash
@@ -132,7 +146,7 @@ echo "---"
 href="href='https://calendar.google.com/calendar/u/0/r/'"
 
 i=1
-while :; do 
+while :; do
     event=$(i3-agenda -c ~/.google_credentials.json -ttl 60 --limchar 30 --skip $i --today)
     ((i++))
     if [[ "$event" == "No events" ]];then
@@ -205,3 +219,10 @@ if [ -n "${1}" ]; then
   echo $skip > $file
 fi
 ```
+
+
+[pipx]: https://pypa.github.io/pipx/installation/
+[cred]: https://console.developers.google.com/apis/credentials
+[python]: https://developers.google.com/calendar/quickstart/python
+[auth]: https://developers.google.com/calendar/auth
+[secret]: https://github.com/jay0lee/GAM/wiki/CreatingClientSecretsFile

@@ -8,8 +8,8 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build, Resource
 
-from event import Event, from_json
-from config import CONF_DIR
+from i3_agenda.event import Event, from_json
+from i3_agenda.config import CONF_DIR
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 TMP_TOKEN = f"{CONF_DIR}/i3agenda_google_token.pickle"

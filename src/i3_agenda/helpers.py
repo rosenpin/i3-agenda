@@ -2,7 +2,7 @@ import datetime as dt
 import time
 from typing_extensions import LiteralString
 
-from const import *
+from i3_agenda.const import *
 
 
 def human_delta(tdelta : dt.timedelta) -> str:

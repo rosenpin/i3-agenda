@@ -1,12 +1,12 @@
-from config import CONF_DIR
+from i3_agenda.config import CONF_DIR
 from typing import Optional, List, TextIO
 
 import os.path
 import time
 import json
 
-from event import Event, EventEncoder
-from const import SECONDS_PER_MINUTE
+from i3_agenda.event import Event, EventEncoder
+from i3_agenda.const import SECONDS_PER_MINUTE
 
 CACHE_PATH = f"{CONF_DIR}/i3agenda_cache.txt"
 

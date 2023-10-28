@@ -1,17 +1,15 @@
-#!/usr/bin/env python3
-
 from __future__ import print_function
 
 import subprocess
-import config
+from i3_agenda import config
 
 from typing import List, Optional
 import datetime
 
-from event import Event, get_closest, sort_events, get_future_events
+from i3_agenda.event import Event, get_closest, sort_events, get_future_events
 
 from typing import Union
-from const import *
+from i3_agenda.const import *
 
 DEFAULT_CAL_WEBPAGE = "https://calendar.google.com/calendar/r/day"
 
@@ -22,7 +20,7 @@ def button_action(button_code: str, closest: Event):
             print("Opening calendar page...")
             subprocess.Popen(["xdg-open", DEFAULT_CAL_WEBPAGE])
         elif button_code == RIGHT_MOUSE_BUTTON:
-            if closest.location: 
+            if closest.location:
                 print("Opening location link...")
                 subprocess.Popen(["xdg-open", closest.location])
 
@@ -40,8 +38,8 @@ def filter_only_todays_events(events: List[Event]) -> Optional[List[Event]]:
 
 
 def load_events(args) -> List[Event]:
-    from API import get_events
-    from cache_utils import load_cache, save_cache
+    from i3_agenda.api import get_events
+    from i3_agenda.cache_utils import load_cache, save_cache
 
     events : Union[None,list[Event]] = None
 

@@ -7,9 +7,9 @@ from typing import List, Optional, Any, Union, Dict
 
 from bidi.algorithm import get_display
 
-from config import MIN_CHARS, MIN_DELAY, URL_REGEX
-from const import *
-from helpers import get_unix_time, human_delta
+from i3_agenda.config import MIN_CHARS, MIN_DELAY, URL_REGEX
+from i3_agenda.const import *
+from i3_agenda.helpers import get_unix_time, human_delta
 from dataclasses import dataclass
 
 

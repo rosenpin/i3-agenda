@@ -1,7 +1,7 @@
 import os
 from os.path import expanduser
 import argparse
-from const import *
+from i3_agenda.const import *
 
 
 
@@ -40,7 +40,7 @@ parser.add_argument(
     "-u",
     action="store_true",
     default=False,
-    help="""when using this flag it will not load previous results from cache, it will however save 
+    help="""when using this flag it will not load previous results from cache, it will however save
             new results to cache. You can use this flag to refresh all the cache forcefully""",
 )
 parser.add_argument(
@@ -56,7 +56,7 @@ parser.add_argument(
     "-r",
     type=int,
     default=10,
-    help="""max number of events to query Google's API for each of your calendars. Increase this number if you 
+    help="""max number of events to query Google's API for each of your calendars. Increase this number if you
             have lot of events in your google calendar""",
 )
 parser.add_argument(

@@ -5,7 +5,7 @@ import pytest
 
 from typing import Dict
 
-from helpers import *
+from i3_agenda.helpers import *
 
 
 @pytest.mark.parametrize("test_input,expected",

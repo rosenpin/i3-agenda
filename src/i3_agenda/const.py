@@ -1,4 +1,3 @@
-
 from typing_extensions import Final
 
 DAYS_PER_WEEK : Final = 7

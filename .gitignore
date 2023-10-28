@@ -12,3 +12,4 @@ i3_agenda/__pycache__
 .mypy_cache/
 __pycache__
 
+.autoenv
