@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "i3-agenda"
-version = "1.7"
+version = "1.8"
 description = "Show your next google calendar event in polybar or i3-bar"
 readme = "README.md"
 authors = [{ name = "Tomer Rosenfeld", email = "mail@tomerrosenfeld.com" }]
