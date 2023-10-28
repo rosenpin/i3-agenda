@@ -13,3 +13,4 @@ i3_agenda/__pycache__
 __pycache__
 
 .autoenv
+.coverage
