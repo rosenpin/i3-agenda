@@ -37,14 +37,17 @@ After downloading the credentials file, install the package.
 
 ### Pipx
 
-Using [`pipx`][pipx] will save you time and it's crossplatform.
+Using [`pipx`][pipx] will save you time and it's cross-platform. It is a
+package manager for Python that allows you to easily install and run Python
+packages in isolated environments.
 
 ```bash
 pipx install https://github.com/rosenpin/i3-agenda
 ```
 
 ### Pip
-1. `sudo pip install i3-agenda`
+
+1. `sudo pip install .`
 2. Try running `i3-agenda -c $CREDENTIALS_FILE_PATH` with "$CREDENTIALS_FILE_PATH" replaced with the path to the credentials.json file you downloaded in the previous step.
 3. Add configuration to your bar (examples in the Examples section below).
 
