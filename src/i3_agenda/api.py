@@ -8,6 +8,7 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build, Resource
 
+from textwrap import dedent
 from i3_agenda.event import Event, from_json
 from i3_agenda.config import CONF_DIR
 
@@ -36,7 +37,12 @@ def get_credentials(credspath):
     if not creds or not creds.valid:
         if not Path(credspath).is_file():
             print(
-                """You need to download your credentials json file from the Google API Console and pass its path to this script"""
+                dedent(
+                    """
+                You need to download your credentials json file from the Google
+                API Console and pass its path to this script
+                """
+                ).replace("\n", " ")
             )
             exit(1)
         if creds and creds.expired and creds.refresh_token:
@@ -50,7 +56,9 @@ def get_credentials(credspath):
     return creds
 
 
-def get_callendar_ids(allowed_calendars_ids: List[str], service: Resource) -> List:
+def get_callendar_ids(
+    allowed_calendars_ids: List[str], service: Resource
+) -> List:
     calendar_ids = []
     while True:
         calendar_list = service.calendarList().list().execute()
@@ -85,7 +93,9 @@ def get_result(service, calendar_id, max_results, time_max_rfc3339=None):
 
 def get_today_events(service, calendar_id, max_results):
     now = datetime.datetime.utcnow()
-    midnight_rfc3339 = now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
+    midnight_rfc3339 = (
+        now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
+    )
     return get_result(service, calendar_id, max_results, midnight_rfc3339).get(
         "items", []
     )

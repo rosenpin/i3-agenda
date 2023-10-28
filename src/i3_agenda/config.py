@@ -1,8 +1,7 @@
 import os
 from os.path import expanduser
 import argparse
-from i3_agenda.const import *
-
+from i3_agenda.const import MIN_DELAY, MIN_CHARS
 
 
 CONF_DIR = expanduser("~") + os.path.sep + ".i3agenda"

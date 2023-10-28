@@ -15,7 +15,10 @@ def load_cache(cachettl: int) -> Optional[List[Event]]:
     if not os.path.exists(CACHE_PATH):
         return None
 
-    if time.time() - os.path.getmtime(CACHE_PATH) > cachettl * SECONDS_PER_MINUTE:
+    if (
+        time.time() - os.path.getmtime(CACHE_PATH)
+        > cachettl * SECONDS_PER_MINUTE
+    ):
         return None
 
     try:
