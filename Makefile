@@ -22,6 +22,7 @@ release: ## Create a release: make release v=0.1.0
 	@if [ -z "$(v)" ]; then echo "Missing version number:\nUse: make release v=0.1"; exit 1; fi
 	@sed -i -e "s/version = \".*\"/version = \"$(v)\"/" pyproject.toml
 	@sed -i -e "s/__version__ = \".*\"/__version__ = \"$(v)\"/" src/i3_agenda/__init__.py
+	@sed -i -e "s/archive\/[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?\.tar\.gz/archive\/$(v).tar.gz/" pyproject.toml
 	@git diff
 	@# ideally we would use the following
 	@# git add pyproject.toml src/i3_agenda/__init__.py
