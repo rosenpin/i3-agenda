@@ -24,7 +24,7 @@ release: ## Create a release: make release v=0.1.0
 	@sed -i -e "s/__version__ = \".*\"/__version__ = \"$(v)\"/" src/i3_agenda/__init__.py
 	@sed -i -e "s/archive\/[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?\.tar\.gz/archive\/$(v).tar.gz/" pyproject.toml
 	@git diff
-	@# ideally we would use the following
+	@# Ideally, we would use the following
 	@# git add pyproject.toml src/i3_agenda/__init__.py
 	@# git commit -m "Release v$(v)"
 	@# git tag -a v$(v) -m "Release v$(v)"
