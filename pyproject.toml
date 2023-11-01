@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.urls]
-Download = "https://github.com/rosenpin/i3-agenda/archive/1.7.tar.gz"
+Download = "https://github.com/rosenpin/i3-agenda/archive/1.8.tar.gz"
 
 [project.scripts]
 i3-agenda = "i3_agenda.main:main"
