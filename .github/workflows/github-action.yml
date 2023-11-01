@@ -31,11 +31,9 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
-        working-directory: ./i3_agenda
         run: |
-          pytest tests --junitxml=../junit/test-results.xml
-          pytest tests --doctest-modules --cov=. --cov-report=xml:../coverage/cov.xml --cov-report=html:../coverage/
-
+          pytest tests --junitxml=junit/test-results.xml
+          pytest tests --doctest-modules --cov=. --cov-report=xml:coverage/cov.xml --cov-report=html:coverage/
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95
         with:
@@ -59,4 +57,3 @@ jobs:
         with:
           name: coverage
           path: pr/
-
