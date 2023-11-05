@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "i3-agenda"
+version = "1.8"
+description = "Show your next google calendar event in polybar or i3-bar"
+readme = "README.md"
+authors = [{ name = "Tomer Rosenfeld", email = "mail@tomerrosenfeld.com" }]
+license = {text = "Unlicense"}
+classifiers = ["Programming Language :: Python :: 3"]
+requires-python = ">=3.3"
+dependencies = [
+    "aiohttp",
+    "google-api-python-client",
+    "google-auth-httplib2",
+    "google-auth-oauthlib",
+    "python-bidi",
+    "typing_extensions"
+]
+
+[project.urls]
+Download = "https://github.com/rosenpin/i3-agenda/archive/1.8.tar.gz"
+
+[project.scripts]
+i3-agenda = "i3_agenda.main:main"
+
+[metadata]
+url = "https://github.com/rosenpin/i3-agenda"
+author = "Tomer Rosenfeld"
+author_email = "mail@tomerrosenfeld.com"
+

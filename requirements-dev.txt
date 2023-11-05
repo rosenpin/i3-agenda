@@ -1,0 +1,6 @@
+flake8
+pytest
+freezegun
+pytest-cov
+black
+isort

@@ -3,5 +3,4 @@ google-api-python-client>=2.66
 google-auth-httplib2>=0.1.
 google-auth-oauthlib>=0.7
 aiohttp>=3.8
-typing_extensions
-
+typing_extensions>=4.7.1

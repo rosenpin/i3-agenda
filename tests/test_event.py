@@ -2,11 +2,16 @@ import datetime as dt
 import os
 import time
 
-from freezegun import freeze_time
 import pytest
+from freezegun import freeze_time
 
-from event import *
-
+from i3_agenda.event import (
+    MIN_DELAY,
+    Event,
+    from_json,
+    get_closest,
+    get_future_events,
+)
 
 os.environ['TZ'] = 'UTC'
 time.tzset()
