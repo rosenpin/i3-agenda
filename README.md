@@ -42,8 +42,10 @@ package manager for Python that allows you to easily install and run Python
 packages in isolated environments.
 
 ```bash
-pipx install https://github.com/rosenpin/i3-agenda
+pipx install i3-agenda
 ```
+
+You could also install the last development version with: `pipx install git+https://github.com/rosenpin/i3-agenda.git`
 
 ### Pip
 
